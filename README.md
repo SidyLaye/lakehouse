@@ -1,15 +1,4 @@
 # lakehouse
-Parfait. Je vais générer un rapport final complet en français, structuré selon les 11 critères d’évaluation, intégrant :
-
-* L’analyse technique détaillée de chaque fichier Python
-* Les extraits de code pertinents et commentés (pas le code entier)
-* L’analyse complète des images intégrées au document Word
-* Les justifications liées au déploiement, Spark-submit, et l’architecture
-* Les liens explicites entre chaque étape du pipeline (Feeder, Preprocessing, ML, Datamarts, API)
-
-Je te reviens avec le document prêt à télécharger dans quelques instants.
-
-
 # Rapport de projet : Pipeline Big Data pour la détection de fraude
 
 **Auteurs :** Sidy Laye Sarr, Lauryn Lésel, Véronèse Nikina Zinsou – *Date : 4 juin 2025*
