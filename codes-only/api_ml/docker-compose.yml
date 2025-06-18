@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  fraud-api:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./fraud_logreg.pkl:/app/fraud_logreg.pkl  # Mount du modèle
+      - .:/app  # Mount pour le développement (optionnel)
+    environment:
+      - MODEL_PATH=fraud_logreg.pkl
+    restart: unless-stopped
