@@ -2,12 +2,36 @@ version: '3.8'
 
 services:
   fraud-api:
-    build: .
+    build: 
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: fraud-detection-api
     ports:
       - "8000:8000"
-    volumes:
-      - ./fraud_logreg.pkl:/app/fraud_logreg.pkl  # Mount du modèle
-      - .:/app  # Mount pour le développement (optionnel)
-    environment:
-      - MODEL_PATH=fraud_logreg.pkl
     restart: unless-stopped
+    networks:
+      - fraud-network
+
+  fraud-ui:
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+    container_name: fraud-detection-ui
+    ports:
+      - "8501:8501"
+    depends_on:
+      - fraud-api
+    restart: unless-stopped
+    networks:
+      - fraud-network
+    environment:
+      - STREAMLIT_SERVER_PORT=8501
+      - STREAMLIT_SERVER_ADDRESS=0.0.0.0
+      - STREAMLIT_SERVER_HEADLESS=true
+
+networks:
+  fraud-network:
+    driver: bridge
+
+volumes:
+  fraud-data:
