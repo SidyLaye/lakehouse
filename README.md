@@ -26,6 +26,7 @@ docker-compose ps
 |---------|-----|-------------|
 | API Fraud Detection | http://localhost:8000 | API REST de prédiction |
 | Documentation API | http://localhost:8000/docs | Interface Swagger automatique |
+| Interface Streamlit | http://localhost:8501 | Interface web interactive |
 
 ### Test de l'API
 
@@ -55,6 +56,30 @@ curl -X POST "http://localhost:8000/predict" \
      }'
 ```
 
+## 🎯 Interface Streamlit
+
+### Accès à l'interface web
+
+L'application Streamlit est disponible à l'adresse :
+
+```
+http://localhost:8501
+```
+
+### Fonctionnalités
+
+- **Interface intuitive** : Formulaire web pour saisir les données
+- **Prédiction temps réel** : Résultats instantanés
+- **Visualisations** : Graphiques et métriques interactives
+- **Historique** : Consultation des prédictions précédentes
+
+### Utilisation
+
+1. Naviguez vers http://localhost:8501
+2. Remplissez les champs du formulaire avec les données de transaction
+3. Cliquez sur "Prédire" pour obtenir le résultat
+4. Consultez la probabilité de fraude et la classification
+
 ### Gestion des containers
 
 #### Arrêt des services
@@ -71,6 +96,7 @@ docker-compose logs -f
 
 # Service spécifique
 docker-compose logs fraud-api
+docker-compose logs streamlit-app
 ```
 
 #### Reconstruction après modification
@@ -114,6 +140,9 @@ L'API attend un JSON avec les features du modèle de détection de fraude. Consu
 ├── app/
 │   ├── main.py
 │   └── model.pkl
+├── streamlit/
+│   ├── app.py
+│   └── requirements.txt
 ├── test_fraud.json
 └── README.md
 ```
@@ -124,4 +153,14 @@ Pour suivre les logs en temps réel :
 
 ```bash
 docker-compose logs -f
+```
+
+### Accès aux containers
+
+```bash
+# Accès au container API
+docker-compose exec fraud-api bash
+
+# Accès au container Streamlit
+docker-compose exec streamlit-app bash
 ```
