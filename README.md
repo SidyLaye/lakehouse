@@ -13,11 +13,11 @@
 
 ```bash
 # Construction et lancement des services
-docker-compose build
-docker-compose up -d
+docker compose build
+docker compose up -d
 
 # Vérification des services
-docker-compose ps
+docker compose ps
 ```
 
 ### Services disponibles
@@ -85,25 +85,25 @@ http://localhost:8501
 #### Arrêt des services
 
 ```bash
-docker-compose down
+docker compose down
 ```
 
 #### Consultation des logs
 
 ```bash
 # Tous les services
-docker-compose logs -f
+docker compose logs -f
 
 # Service spécifique
-docker-compose logs fraud-api
-docker-compose logs streamlit-app
+docker compose logs fraud-api
+docker compose logs streamlit-app
 ```
 
 #### Reconstruction après modification
 
 ```bash
-docker-compose build --no-cache
-docker-compose up -d
+docker compose build --no-cache
+docker compose up -d
 ```
 
 ## 📊 Utilisation de l'API
@@ -152,7 +152,7 @@ L'API attend un JSON avec les features du modèle de détection de fraude. Consu
 Pour suivre les logs en temps réel :
 
 ```bash
-docker-compose logs -f
+docker compose logs -f
 ```
 
 ### Accès aux containers
