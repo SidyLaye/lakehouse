@@ -1,0 +1,22 @@
+
+ð
+serde_suite.proto$org.apache.spark.sql.protobuf.protos"P
+SerdeBasicMessage;
+foo (2).org.apache.spark.sql.protobuf.protos.FooRfoo"
+Foo
+bar (Rbar"'
+MissMatchTypeInRoot
+foo (Rfoo"[
+FieldMissingInProtoD
+foo (22.org.apache.spark.sql.protobuf.protos.MissingFieldRfoo"&
+MissingField
+barFoo (RbarFoo"c
+MissMatchTypeInDeepNestedF
+top (24.org.apache.spark.sql.protobuf.protos.TypeMissNestedRtop"R
+TypeMissNested@
+foo (2..org.apache.spark.sql.protobuf.protos.TypeMissRfoo"
+TypeMiss
+bar (Rbar")
+Baz
+bar (Rbar
+baz (RbazBBSerdeSuiteProtosbproto3

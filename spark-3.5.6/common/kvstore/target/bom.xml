@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bom serialNumber="urn:uuid:42417be4-2e40-4e94-89c6-677193e8af9d" version="1" xmlns="http://cyclonedx.org/schema/bom/1.4">
+  <metadata>
+    <timestamp>2025-06-01T15:48:04Z</timestamp>
+    <tools>
+      <tool>
+        <vendor>OWASP Foundation</vendor>
+        <name>CycloneDX Maven plugin</name>
+        <version>2.7.9</version>
+        <hashes>
+          <hash alg="MD5">8e595cdb67f17e4b41e046456970591d</hash>
+          <hash alg="SHA-1">69e8ca804520d09ce4657e7235bae84d01cbffa6</hash>
+          <hash alg="SHA-256">aa09074fe5aa403c008cd4fc7ef8ce41cd244489337f16b3e91a3914158a4db8</hash>
+          <hash alg="SHA-512">1488a8112da8e675813d7585f57c5efb178aed32901118186ee12d0e4ae3d19c53774c7f860bf70d17d70f050119b69443a2637cf641675b4b5d9cdcdd69b89b</hash>
+          <hash alg="SHA-384">b097295dfbf10887abc6eec58d4d0822cde5a73d1f5c1cf183a57bf569016ad5ced9d34efae3e574d82bb62837540c6c</hash>
+        </hashes>
+      </tool>
+    </tools>
+    <component type="library" bom-ref="pkg:maven/org.apache.spark/spark-kvstore_2.12@3.5.6?type=jar">
+      <publisher>Apache Software Foundation</publisher>
+      <group>org.apache.spark</group>
+      <name>spark-kvstore_2.12</name>
+      <version>3.5.6</version>
+      <description>The Apache Software Foundation provides support for the Apache community of open-source software projects.
+    The Apache projects are characterized by a collaborative, consensus based development process, an open and
+    pragmatic software license, and a desire to create high quality software that leads the way in its field.
+    We consider ourselves not simply a group of projects sharing a server, but rather a community of developers
+    and users.</description>
+      <licenses>
+        <license>
+          <id>Apache-2.0</id>
+          <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+      </licenses>
+      <purl>pkg:maven/org.apache.spark/spark-kvstore_2.12@3.5.6?type=jar</purl>
+      <externalReferences><reference type="website"><url>https://spark.apache.org/</url></reference><reference type="distribution"><url>https://repository.apache.org/service/local/staging/deploy/maven2</url></reference><reference type="issue-tracker"><url>https://issues.apache.org/jira/browse/SPARK</url></reference><reference type="mailing-list"><url>dev-subscribe@spark.apache.org</url></reference><reference type="vcs"><url>scm:git:git@github.com:apache/spark.git/common/spark-kvstore_2.12</url></reference></externalReferences>
+    </component>
+    <properties>
+      <property name="maven.goal">makeBom</property>
+      <property name="maven.scopes">compile,provided,runtime,system</property>
+    </properties>
+  </metadata>
+  <components>
+    <component type="library" bom-ref="pkg:maven/org.apache.spark/spark-tags_2.12@3.5.6?type=jar">
+      <publisher>Apache Software Foundation</publisher>
+      <group>org.apache.spark</group>
+      <name>spark-tags_2.12</name>
+      <version>3.5.6</version>
+      <description>The Apache Software Foundation provides support for the Apache community of open-source software projects.
+    The Apache projects are characterized by a collaborative, consensus based development process, an open and
+    pragmatic software license, and a desire to create high quality software that leads the way in its field.
+    We consider ourselves not simply a group of projects sharing a server, but rather a community of developers
+    and users.</description>
+      <scope>required</scope>
+      <hashes>
+        <hash alg="MD5">a8aac9df14c8be2862e11fd1be6ecefe</hash>
+        <hash alg="SHA-1">3040b1c2f31e116597206db374ad53fb9db5cdfb</hash>
+        <hash alg="SHA-256">22032a5bd62bc5b55cbd487f0b1c10df1dd012bfd3feb566a7f80755538bfd3b</hash>
+        <hash alg="SHA-512">e0fd9771f5e18dd4da52a7b89a942cd922f2550b071078231ce627ff414d660c0d31081593a153b41ee3a72140feb9ae3f332cf768dbad1efda2941f79ffdcf6</hash>
+        <hash alg="SHA-384">d3cfe2e2a87ddaea6f2a3d1322dbed438152551bd0bf72ba61536a08dcf7faa3d9a3f273e22708bd1adec99b9203537f</hash>
+      </hashes>
+      <licenses>
+        <license>
+          <id>Apache-2.0</id>
+          <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+      </licenses>
+      <purl>pkg:maven/org.apache.spark/spark-tags_2.12@3.5.6?type=jar</purl>
+      <externalReferences><reference type="website"><url>https://spark.apache.org/</url></reference><reference type="distribution"><url>https://repository.apache.org/service/local/staging/deploy/maven2</url></reference><reference type="issue-tracker"><url>https://issues.apache.org/jira/browse/SPARK</url></reference><reference type="mailing-list"><url>dev-subscribe@spark.apache.org</url></reference><reference type="vcs"><url>scm:git:git@github.com:apache/spark.git/common/spark-tags_2.12</url></reference></externalReferences>
+    </component>
+    <component type="library" bom-ref="pkg:maven/org.scala-lang/scala-library@2.12.18?type=jar">
+      <publisher>LAMP/EPFL</publisher>
+      <group>org.scala-lang</group>
+      <name>scala-library</name>
+      <version>2.12.18</version>
+      <description>Standard library for the Scala Programming Language</description>
+      <scope>required</scope>
+      <hashes>
+        <hash alg="MD5">a7dc0cf9f73ab2dffb2f34b69e93c349</hash>
+        <hash alg="SHA-1">fa825f984172f6801e3d8c476071b1823c0a925b</hash>
+        <hash alg="SHA-256">e51e6636c003359e106bea4ad99def70e613c290190c8c84f10f9560dd5b00ae</hash>
+        <hash alg="SHA-512">d50e05a806168687b1526bc197ba626973121eb692e68f567a15a944eb44e3fec37d5147e000d3bd05d69dc9874695389041c6c16bdcc1e665c1ef04e01be67d</hash>
+        <hash alg="SHA-384">7bec1053a4befc082a7ecbf13d8c17082e113fb5d4a1f389f2de8d23e11372b42941367a09878b236b830190ab32d80b</hash>
+      </hashes>
+      <licenses>
+        <license>
+          <id>Apache-2.0</id>
+          <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+      </licenses>
+      <purl>pkg:maven/org.scala-lang/scala-library@2.12.18?type=jar</purl>
+      <externalReferences><reference type="website"><url>https://www.scala-lang.org/</url></reference><reference type="issue-tracker"><url>https://github.com/scala/bug/issues</url></reference><reference type="vcs"><url>https://github.com/scala/scala</url></reference></externalReferences>
+    </component>
+    <component type="library" bom-ref="pkg:maven/com.google.guava/guava@14.0.1?type=jar">
+      <group>com.google.guava</group>
+      <name>guava</name>
+      <version>14.0.1</version>
+      <description>Guava is a suite of core and expanded libraries that include
+    utility classes, google's collections, io classes, and much
+    much more.
+
+    Guava has two code dependencies - javax.annotation
+    per the JSR-305 spec and javax.inject per the JSR-330 spec.</description>
+      <scope>required</scope>
+      <hashes>
+        <hash alg="MD5">58553f87d83b9f8ec74bd3529083ee2f</hash>
+        <hash alg="SHA-1">69e12f4c6aeac392555f1ea86fab82b5e5e31ad4</hash>
+        <hash alg="SHA-256">d69df3331840605ef0e5fe4add60f2d28e870e3820937ea29f713d2035d9ab97</hash>
+        <hash alg="SHA-512">e920540dbdee79fba1a5e0966ae92ac37358aa4126c04a08732e4260916807901d8dea41322037ef7908fc0204281d05a1bfa95401fcfc473630c0bc8e81343a</hash>
+        <hash alg="SHA-384">1f5c72fdf4fbef5fe6044054d83cda82d409ce2b8e304913cc985341ceb13e75728dfcdba522dc87aa04577a054afeae</hash>
+      </hashes>
+      <licenses>
+        <license>
+          <id>Apache-2.0</id>
+        </license>
+      </licenses>
+      <purl>pkg:maven/com.google.guava/guava@14.0.1?type=jar</purl>
+      <externalReferences><reference type="website"><url>http://code.google.com/p/guava-libraries/guava</url></reference><reference type="distribution"><url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url></reference><reference type="issue-tracker"><url>http://code.google.com/p/guava-libraries/issues</url></reference><reference type="vcs"><url>http://code.google.com/p/guava-libraries/source/browse/guava</url></reference></externalReferences>
+    </component>
+    <component type="library" bom-ref="pkg:maven/org.fusesource.leveldbjni/leveldbjni-all@1.8?type=jar">
+      <publisher>FuseSource, Corp.</publisher>
+      <group>org.fusesource.leveldbjni</group>
+      <name>leveldbjni-all</name>
+      <version>1.8</version>
+      <description>An uber jar which contains all the leveldbjni platform libraries and dependencies</description>
+      <scope>required</scope>
+      <hashes>
+        <hash alg="MD5">6944e9bc03c7938868e53c96726ae914</hash>
+        <hash alg="SHA-1">707350a2eeb1fa2ed77a32ddb3893ed308e941db</hash>
+        <hash alg="SHA-256">c297213b0e6f9392305952753f3099a4c02e70b3656266fe01867e7b6c160ffe</hash>
+        <hash alg="SHA-512">2e9f806af5d89c00e345b4516ffd325893a07f30c87274fa5b8ce314aad021633750b665d8c338fbf5adc79a527e19caf96d0b12af57e56fb8d3d8f7fd845a96</hash>
+        <hash alg="SHA-384">f10d7ce88da5a9fada67fcbf6fc02939346e67428ee5dd7b000f884d8046131391ee1ece83885d3de60532d1227a66f2</hash>
+      </hashes>
+      <licenses>
+        <license>
+          <id>BSD-3-Clause</id>
+        </license>
+      </licenses>
+      <purl>pkg:maven/org.fusesource.leveldbjni/leveldbjni-all@1.8?type=jar</purl>
+      <externalReferences><reference type="website"><url>http://leveldbjni.fusesource.org/leveldbjni-all</url></reference><reference type="distribution"><url>http://repo.fusesource.com/nexus/service/local/staging/deploy/maven2</url></reference><reference type="issue-tracker"><url>https://github.com/fusesource/leveldbjni/issues</url></reference><reference type="mailing-list"><url>leveldbjni-dev-subscribe@fusesource.org</url></reference><reference type="vcs"><url>https://github.com/fusesource/leveldbjni/leveldbjni-all</url></reference></externalReferences>
+    </component>
+    <component type="library" bom-ref="pkg:maven/com.fasterxml.jackson.core/jackson-core@2.15.2?type=jar">
+      <publisher>FasterXML</publisher>
+      <group>com.fasterxml.jackson.core</group>
+      <name>jackson-core</name>
+      <version>2.15.2</version>
+      <description>Core Jackson processing abstractions (aka Streaming API), implementation for JSON</description>
+      <scope>required</scope>
+      <hashes>
+        <hash alg="MD5">e51fdee85b48e6637ad9e85ee76b58df</hash>
+        <hash alg="SHA-1">a6fe1836469a69b3ff66037c324d75fc66ef137c</hash>
+        <hash alg="SHA-256">303c99e82b1faa91a0bae5d8fbeb56f7e2adf9b526a900dd723bf140d62bd4b4</hash>
+        <hash alg="SHA-512">a8a3ddf5c8a732fc3810f9c113d88fd59bf613d15dbf9d3e24dd196b2b8c2195f4088375e3d03906f2629e62983fef3267b5478abd5ab1df733ec58cd00efae6</hash>
+        <hash alg="SHA-384">22f4b71de5860b9c54dd85091d5b1312f7f5097a376f68f5a35b32a342858bf2e24ed394d76be0648545a6137d78b82e</hash>
+      </hashes>
+      <licenses>
+        <license>
+          <id>Apache-2.0</id>
+        </license>
+      </licenses>
+      <purl>pkg:maven/com.fasterxml.jackson.core/jackson-core@2.15.2?type=jar</purl>
+      <externalReferences><reference type="website"><url>https://github.com/FasterXML/jackson-core</url></reference><reference type="distribution"><url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url></reference><reference type="issue-tracker"><url>https://github.com/FasterXML/jackson-core/issues</url></reference><reference type="vcs"><url>https://github.com/FasterXML/jackson-core</url></reference></externalReferences>
+    </component>
+    <component type="library" bom-ref="pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.15.2?type=jar">
+      <publisher>FasterXML</publisher>
+      <group>com.fasterxml.jackson.core</group>
+      <name>jackson-databind</name>
+      <version>2.15.2</version>
+      <description>General data-binding functionality for Jackson: works on core streaming API</description>
+      <scope>required</scope>
+      <hashes>
+        <hash alg="MD5">20ac0d0526a456274409fa852eb74087</hash>
+        <hash alg="SHA-1">9353b021f10c307c00328f52090de2bdb4b6ff9c</hash>
+        <hash alg="SHA-256">0eb2fdad6e40ab8832a78c9b22f58196dd970594e8d3d5a26ead87847c4f3a96</hash>
+        <hash alg="SHA-512">edf622f3d2bb2cdf308875e467f28eafdd581c6ad47992a2b49a2c803b597c7fe4330c8f887687599c8a6a529d8b11054f8b354b7ddddd2bf904ef347d4f1cd2</hash>
+        <hash alg="SHA-384">cced300ea06748cc30cdabf1a0a8e45749d3d2a52740975acd858bd13b83458d535a52fc4cc0eb8991ebd3638b9688ec</hash>
+      </hashes>
+      <licenses>
+        <license>
+          <id>Apache-2.0</id>
+        </license>
+      </licenses>
+      <purl>pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.15.2?type=jar</purl>
+      <externalReferences><reference type="website"><url>https://github.com/FasterXML/jackson</url></reference><reference type="distribution"><url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url></reference><reference type="issue-tracker"><url>https://github.com/FasterXML/jackson-databind/issues</url></reference><reference type="vcs"><url>https://github.com/FasterXML/jackson-databind</url></reference></externalReferences>
+    </component>
+    <component type="library" bom-ref="pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.15.2?type=jar">
+      <publisher>FasterXML</publisher>
+      <group>com.fasterxml.jackson.core</group>
+      <name>jackson-annotations</name>
+      <version>2.15.2</version>
+      <description>Core annotations used for value types, used by Jackson data binding package.</description>
+      <scope>required</scope>
+      <hashes>
+        <hash alg="MD5">71dabcaac955a8bd17b5bba6580aac5b</hash>
+        <hash alg="SHA-1">4724a65ac8e8d156a24898d50fd5dbd3642870b8</hash>
+        <hash alg="SHA-256">04e21f94dcfee4b078fa5a5f53047b785aaba69d19de392f616e7a7fe5d3882f</hash>
+        <hash alg="SHA-512">c9ffb4cf3e409921bca1fa6126ca8746c611042ac3fcf0e4f991d23d12b20ef0946ef1421d991ae8ed86012059df4e08fb776d96db6d13147c2ec85e22254537</hash>
+        <hash alg="SHA-384">78885119a700d5dd717fc83e58bf063e1fd07bc823846b6797af6a04a99e92e8fbcf28c3a1316079e6695c138c110deb</hash>
+      </hashes>
+      <licenses>
+        <license>
+          <id>Apache-2.0</id>
+        </license>
+      </licenses>
+      <purl>pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.15.2?type=jar</purl>
+      <externalReferences><reference type="website"><url>https://github.com/FasterXML/jackson</url></reference><reference type="distribution"><url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url></reference><reference type="issue-tracker"><url>https://github.com/FasterXML/jackson-annotations/issues</url></reference><reference type="vcs"><url>https://github.com/FasterXML/jackson-annotations</url></reference></externalReferences>
+    </component>
+    <component type="library" bom-ref="pkg:maven/org.rocksdb/rocksdbjni@8.3.2?type=jar">
+      <publisher>Facebook</publisher>
+      <group>org.rocksdb</group>
+      <name>rocksdbjni</name>
+      <version>8.3.2</version>
+      <description>RocksDB fat jar that contains .so files for linux32 and linux64 (glibc and musl-libc), jnilib files
+        for Mac OSX, and a .dll for Windows x64.</description>
+      <scope>required</scope>
+      <hashes>
+        <hash alg="MD5">b436b922b1721bbfdc83ccd4ad004622</hash>
+        <hash alg="SHA-1">58691480ac749ec2b12b1f3ea9941ac9f7d5a361</hash>
+        <hash alg="SHA-256">289cafede18172b2a477833485360f938fb82f5fc2c4aaaf2801a8b62f8e153b</hash>
+        <hash alg="SHA-512">37abeb585d3e091b006ff322383d8f1defbf1eeecb4013f709aa18b8f43e27f87bdaf6545f005f6dd6638b02a2e5472be520fc7d046697691f96797a899c5faa</hash>
+        <hash alg="SHA-384">d6cac15a6675e9d6c1dcc67bed23454e3529fa42ed052ba37cfa6bc35c04ad512a587a5b93b6ef1f795b989b6955fc54</hash>
+      </hashes>
+      <licenses>
+        <license>
+          <id>Apache-2.0</id>
+          <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+        <license>
+          <name>GNU General Public License, version 2</name>
+          <url>http://www.gnu.org/licenses/gpl-2.0.html</url>
+        </license>
+      </licenses>
+      <purl>pkg:maven/org.rocksdb/rocksdbjni@8.3.2?type=jar</purl>
+      <externalReferences><reference type="website"><url>https://rocksdb.org</url></reference><reference type="mailing-list"><url>https://groups.google.com/forum/#!forum/rocksdb</url></reference><reference type="vcs"><url>scm:git:https://github.com/facebook/rocksdb.git</url></reference></externalReferences>
+    </component>
+    <component type="library" bom-ref="pkg:maven/org.spark-project.spark/unused@1.0.0?type=jar">
+      <group>org.spark-project.spark</group>
+      <name>unused</name>
+      <version>1.0.0</version>
+      <description>Sonatype helps open source projects to set up Maven repositories on https://oss.sonatype.org/</description>
+      <scope>required</scope>
+      <hashes>
+        <hash alg="MD5">763373ce9fe48581d4f2b8ffca35bb82</hash>
+        <hash alg="SHA-1">205fe37a2fade6ce6dfcf8eff57ed21a4a1c22af</hash>
+        <hash alg="SHA-256">00fd27fc9bde701581e7dcf5b95981d9e749a1c176bb8bfcd49f675768ff6bf0</hash>
+        <hash alg="SHA-512">08a6ac8d2dc9d89ff557c7e96096c76e687efe3ce166aa6dbb76865bbef64dc8b6ecb5561ef03c2451a688ccdb3876b8f16b9137d02c290a698e917a5656b6fa</hash>
+        <hash alg="SHA-384">c8c51d0d851835107db273d7ce522f026587d922c9d1d34739c3dedf9b7737c1c491e961dc7931f46c476d28acbc91f6</hash>
+      </hashes>
+      <licenses>
+        <license>
+          <id>Apache-2.0</id>
+        </license>
+      </licenses>
+      <purl>pkg:maven/org.spark-project.spark/unused@1.0.0?type=jar</purl>
+      <externalReferences><reference type="website"><url>http://nexus.sonatype.org/oss-repository-hosting.html/unused</url></reference><reference type="distribution"><url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url></reference></externalReferences>
+    </component>
+  </components>
+  <dependencies>
+    <dependency ref="pkg:maven/org.apache.spark/spark-kvstore_2.12@3.5.6?type=jar">
+      <dependency ref="pkg:maven/org.apache.spark/spark-tags_2.12@3.5.6?type=jar"/>
+      <dependency ref="pkg:maven/com.google.guava/guava@14.0.1?type=jar"/>
+      <dependency ref="pkg:maven/org.fusesource.leveldbjni/leveldbjni-all@1.8?type=jar"/>
+      <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-core@2.15.2?type=jar"/>
+      <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.15.2?type=jar"/>
+      <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.15.2?type=jar"/>
+      <dependency ref="pkg:maven/org.rocksdb/rocksdbjni@8.3.2?type=jar"/>
+      <dependency ref="pkg:maven/org.spark-project.spark/unused@1.0.0?type=jar"/>
+    </dependency>
+    <dependency ref="pkg:maven/org.apache.spark/spark-tags_2.12@3.5.6?type=jar">
+      <dependency ref="pkg:maven/org.scala-lang/scala-library@2.12.18?type=jar"/>
+      <dependency ref="pkg:maven/org.spark-project.spark/unused@1.0.0?type=jar"/>
+    </dependency>
+    <dependency ref="pkg:maven/org.scala-lang/scala-library@2.12.18?type=jar"/>
+    <dependency ref="pkg:maven/org.spark-project.spark/unused@1.0.0?type=jar"/>
+    <dependency ref="pkg:maven/com.google.guava/guava@14.0.1?type=jar"/>
+    <dependency ref="pkg:maven/org.fusesource.leveldbjni/leveldbjni-all@1.8?type=jar"/>
+    <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-core@2.15.2?type=jar"/>
+    <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.15.2?type=jar">
+      <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.15.2?type=jar"/>
+      <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-core@2.15.2?type=jar"/>
+    </dependency>
+    <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.15.2?type=jar"/>
+    <dependency ref="pkg:maven/org.rocksdb/rocksdbjni@8.3.2?type=jar"/>
+  </dependencies>
+</bom>

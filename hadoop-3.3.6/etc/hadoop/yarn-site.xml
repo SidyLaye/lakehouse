@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License.  You may not use this file except in
+  compliance with the License.  See accompanying LICENSE file.
+-->
+<configuration>
+
+  <!-- 1) Where the ResourceManager resides -->
+<property>
+    <name>yarn.resourcemanager.hostname</name>
+    <value>localhost</value>
+  </property>
+  <property>
+    <name>yarn.resourcemanager.address</name>
+    <value>localhost:8032</value>
+  </property>
+  <property>
+    <name>yarn.resourcemanager.scheduler.address</name>
+    <value>localhost:8030</value>
+  </property>
+  <property>
+    <name>yarn.resourcemanager.webapp.address</name>
+    <value>localhost:8088</value>
+  </property>
+
+  <!-- 2) Shuffle service (required for MapReduce/Spark on YARN) -->
+  <property>
+    <name>yarn.nodemanager.aux-services</name>
+    <value>mapreduce_shuffle</value>
+  </property>
+
+  <!-- 3) Local & log directories (on local disk; no HDFS for these) -->
+  <property>
+    <name>yarn.nodemanager.local-dirs</name>
+    <value>/tmp/hadoop-yarn/local</value>
+  </property>
+  <property>
+    <name>yarn.nodemanager.log-dirs</name>
+    <value>/tmp/hadoop-yarn/log</value>
+  </property>
+
+  <!-- Ne jamais purger automatiquement les logs locaux (risque d’encombrement disque !) -->
+  <property>
+    <name>yarn.nodemanager.delete.debug-delay-sec</name>
+    <value>-1</value>
+  </property>
+
+  <!-- OU, pour garder les logs un certain temps (en secondes) -->
+  <property>
+    <name>yarn.nodemanager.delete.debug-delay-sec</name>
+    <value>86400</value>   <!-- garder 24 h avant suppression -->
+  </property>
+
+  <!-- 4) (Optional) Aggregate logs into S3A (MinIO) -->
+  <property>
+    <name>yarn.log-aggregation-enable</name>
+    <value>true</value>
+  </property>
+  <property>
+    <name>yarn.nodemanager.remote-app-log-dir</name>
+    <value>/user/history/done-intermediate</value>
+  </property>
+  <property>
+    <name>yarn.log-aggregation.retain-seconds</name>
+    <value>604800</value> <!-- 7 days -->
+  </property>
+  <property>
+    <name>yarn.application.classpath</name>
+    <value>
+      $HADOOP_HOME/*:
+      $HADOOP_HOME/lib/*:
+      $SPARK_HOME/*:
+      $SPARK_HOME/jars/*
+    </value>
+  </property>
+
+  <!-- 6) Physical memory checks only -->
+  <!-- Total physical memory (MB) that this NodeManager advertises -->
+  <property>
+    <name>yarn.nodemanager.resource.memory-mb</name>
+    <value>16384</value> 
+  </property>
+  <!-- Max allocation per container (physical MB) -->
+  <property>
+    <name>yarn.scheduler.maximum-allocation-mb</name>
+    <value>16384</value>
+  </property>
+
+  <!-- 7) Node‐labeling (optional—but leave enabled if you’re not using labels) -->
+  <property>
+    <name>yarn.node-labels.enabled</name>
+    <value>true</value>
+  </property>
+
+</configuration>
