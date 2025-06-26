@@ -5,7 +5,7 @@ Pour run le projet sur AWS (Instances Ec2) :
 
 -Mordifier les fichier sous srv/_credentials
 
--modifier les variables dans srv/deploy_pipeline.sh
+-modifier les variables dans srv/deploy_pipeline.sh et srv/infra/variables.tf
 
 -Run le script shell
 
