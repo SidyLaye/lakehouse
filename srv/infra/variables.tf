@@ -5,7 +5,7 @@ variable "aws_credentials_files" {
   default = ["../_credentials/aws_learner_lab_credentials"]
 }
 variable "ami_id" { default = "ami-053b0d53c279acc90" }
-variable "instance_type" { default = "t3.small" }
+variable "instance_type" { default = "t3.xlarge" }
 variable "key_name" { default = "labsuser" }
 variable "ssh_ingress_cidr" { default = "0.0.0.0/0" }
 variable "service_names" {
