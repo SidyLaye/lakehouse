@@ -1,7 +1,12 @@
 # lakehouse
 Pour run le projet sur AWS (Instances Ec2) :
+
+-Pull srv/
+
 -Mordifier les fichier sous srv/_credentials
+
 -modifier les variables dans srv/deploy_pipeline.sh
+
 -Run le script shell
 
 # lakehouse
