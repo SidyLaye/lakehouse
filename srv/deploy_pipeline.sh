@@ -1,0 +1,54 @@
+#!/bin/bash
+set -e
+
+# (1) Pick up overrides or defaults
+AWS_PROFILE=${AWS_PROFILE:-default}
+AWS_REGION=${AWS_REGION:-us-east-1}
+AWS_CREDENTIALS_FILES=${AWS_CREDENTIALS_FILES:-../_credentials/aws_learner_lab_credentials}
+SSH_KEY=${SSH_KEY:-../_credentials/labsuser.pem}
+KEY_NAME=${KEY_NAME:-labsuser}
+AMI_ID=${AMI_ID:-ami-053b0d53c279acc90}
+INSTANCE_TYPE=${INSTANCE_TYPE:-t3.medium}
+
+# 1) Terraform apply
+echo "[1/4] => Terraform apply"
+cd infra
+tofu init
+tofu apply -auto-approve \
+  -var="aws_profile=$AWS_PROFILE" \
+  -var="aws_region=$AWS_REGION" \
+  -var="aws_credentials_files=[\"$AWS_CREDENTIALS_FILES\"]" \
+  -var="key_name=$KEY_NAME" \
+  -var="ami_id=$AMI_ID" \
+  -var="instance_type=$INSTANCE_TYPE"
+
+# 2) Export Terraform outputs & generate INI inventory
+echo "[2/4] => Génération inventaire Ansible"
+tofu output -json > ../ansible/terraform_output.json
+cd ../ansible
+
+# Generate hosts.ini (not hosts.yml)
+python3 gen_inventory.py terraform_output.json
+
+# 3) Run Ansible playbook against hosts.ini
+echo "[3/4] => Déploiement Ansible"
+ansible-playbook \
+  -i hosts.ini \
+  -u ubuntu \
+  --private-key "$SSH_KEY" \
+  site.yml
+
+echo "[4/4] => Pipeline complété!"
+
+# Affichage des URLs d'accès pour les services exposés
+PUBLIC_IPS=$(grep -E 'ui_api_ml |grafana |elasticsearch ' hosts.ini | awk '{print $1" "$2}' | sed 's/ansible_host=//')
+echo -e "\nAccès aux services :"
+while read -r entry; do
+  name=$(echo $entry | awk '{print $1}')
+  ip=$(echo $entry | awk '{print $2}')
+  case $name in
+    ui_api_ml)      echo "- UI (Streamlit)      : http://$ip:8501" ;;
+    grafana)        echo "- Grafana            : http://$ip:3000" ;;
+    elasticsearch)  echo "- Elasticsearch      : http://$ip:9200" ;;
+  esac
+done <<< "$PUBLIC_IPS"

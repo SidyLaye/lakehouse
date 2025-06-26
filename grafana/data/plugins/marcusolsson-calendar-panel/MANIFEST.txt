@@ -1,0 +1,42 @@
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+{
+  "manifestVersion": "2.0.0",
+  "signatureType": "community",
+  "signedByOrg": "marcusolsson",
+  "signedByOrgName": "Marcus Olsson",
+  "plugin": "marcusolsson-calendar-panel",
+  "version": "3.9.1",
+  "time": 1742355771958,
+  "keyId": "7e4d0c6a708866e7",
+  "files": {
+    "module.js.LICENSE.txt": "97a7c32f22ff541e709de013bb044e5dbb0f735f0e8dcc8aef2d7292caabd6e9",
+    "LICENSE": "06298e608127e13adf795930cc9abbd698a445e94a300344b14c051d7a702b2b",
+    "CHANGELOG.md": "a075e106ceb0dc65c9d064357f9cb003f9a80035b84d5dd1d552546b3fc2ddc6",
+    "img/screenshot.png": "90d362a8b90371b90cb9372da960252c3e6d380b6a6f8ae22a53b14bf0f6e073",
+    "img/logo.svg": "6cf11a1e38150c733a20ee6037bab975e3d654360f5793cf2bddc940da2d83c1",
+    "i18n/translations/fr.json": "1f3ee7890dccb40e7e11debcc75bfe527bacb5e828a13459e3c7aa7087aad325",
+    "i18n/translations/es.json": "dbc3387e87018600cf315f7fa1ca512d0b7461f6776db328d98540ddfdc8c66e",
+    "i18n/translations/de.json": "fc878346f2b1bf8786e3300fa8c1fc8311fd2b6f02a029e2d62b469a73b4cc7d",
+    "i18n/translations/pt.json": "0ef822b34cc2d9bcbf4c6833ff2a7f220b42077dc0b0d778fd035aa8b0fdffd9",
+    "i18n/translations/en.json": "3a34f531004e8fadecf41fe2aa1ebf74e8251fc18b132d806cf55836285c0e45",
+    "i18n/translations/zh.json": "4508f2f1df06eca8ccf239dd486c813f152be468cd591b0f055d855db37a10ef",
+    "README.md": "6b49ca5f2ac9951d9bf495ae2c9e614b65f054e0e1c6767dfe91d93bd16725e0",
+    "module.js.map": "3e24d7461be80f31948d53ca57ec7f6d6de426b2256761928c9a34a49b1828df",
+    "plugin.json": "52412aea2aaacde2cb2c119ae388f9ef952b718af88ba8376a435fa5ce9f3e1b",
+    "module.js": "38ec24b36a18000272d1db824a14e8c5a514c60d24cbe8e11a73cd1437edf127"
+  }
+}
+-----BEGIN PGP SIGNATURE-----
+Version: OpenPGP.js v4.10.11
+Comment: https://openpgpjs.org
+
+wrkEARMKAAYFAmfaPTwAIQkQfk0ManCIZucWIQTzOyW2kQdOhGNlcPN+TQxq
+cIhm5yzfAgkB8nPra+EXcV4I1RIhGl5Pa7hl9x5XF0UIjYNLzZAYr9nEgprU
+612rCdfHINcXcRVG6Mhx+0oz/QPZtAoqSTSFnX4CCQDV3oWfO77D3l/3S2tt
+j4aE5HxEUSe7Mj0jTytWVjAM61Kx15jUwqNOPpoIN9B6ZJbHqOegs8SIUVZW
+PXKAP2CG/g==
+=nCvq
+-----END PGP SIGNATURE-----

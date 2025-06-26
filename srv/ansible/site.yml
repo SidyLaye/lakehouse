@@ -1,0 +1,80 @@
+- name: Vérifier que sudo fonctionne sans mot de passe
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Test sudo sans mot de passe
+      ansible.builtin.command: sudo -n true
+      register: sudo_test
+      ignore_errors: yes
+    - name: Arrêter si sudo ne fonctionne pas
+      ansible.builtin.fail:
+        msg: "L'utilisateur ubuntu n'a pas les droits sudo sans mot de passe sur cette VM. Corrige la config sudoers."
+      when: sudo_test.rc != 0
+
+- name: Wait for all hosts to be SSH-ready
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Wait until port 22 is open
+      wait_for:
+        port: 22
+        state: started
+        delay: 10           # wait 10s before first check
+        timeout: 300        # give each host up to 5 minutes
+
+- name: Déployer chaque service via Docker (pull + run)
+  hosts: all
+  become: yes
+  vars:
+    registry_url: registry.gitlab.com
+    project_path: sidylaye/lakehouse-lfs
+    ports_map:
+      api: "-p 9999:9999"
+      sources_api: "-p 9998:9998"
+      lakehouse: "-p 1000:1000 -p 5000:5000 -p 9870:9870 -p 8088:8088 -p 7077:7077 -p 8000:8000 -p 9000:9000 -p 9001:9001"
+      postgres: "-p 5432:5432"
+      elasticsearch: "-p 9200:9200"
+      prometheus: "-p 9090:9090"
+      grafana: "-p 3000:3000"
+      api_ml: "-p 9997:9997"
+      ui_api_ml: "-p 8501:8501"
+  tasks:
+    - name: Installer docker
+      ansible.builtin.apt:
+        name:
+          - docker.io
+        state: present
+        update_cache: yes
+
+    - name: Arrêter et supprimer le conteneur existant (si présent)
+      ansible.builtin.shell: |
+        docker rm -f {{ inventory_hostname }} || true
+      ignore_errors: true
+
+    - name: Pull l'image depuis le GitLab Container Registry
+      ansible.builtin.shell: |
+        docker pull {{ registry_url }}/{{ project_path }}/{{ inventory_hostname }}:latest
+
+    - name: Lancer le conteneur Docker du service
+      ansible.builtin.shell: |
+        docker run -d --name {{ inventory_hostname }} \
+        --restart unless-stopped \
+        {{ ports_map[inventory_hostname] | default('') }} \
+        {{ registry_url }}/{{ project_path }}/{{ inventory_hostname }}:latest
+      args:
+        executable: /bin/bash
+
+    - name: Afficher les logs de tous les conteneurs Docker présents
+      ansible.builtin.shell: |
+        for c in $(docker ps -a --format '{{ '{{.Names}}' }}'); do
+          echo "===== LOGS POUR $c =====";
+          docker logs $c || true;
+          echo "\n";
+        done
+      register: docker_logs
+      changed_when: false
+      ignore_errors: true
+
+    - name: Afficher les logs dans la sortie Ansible
+      ansible.builtin.debug:
+        var: docker_logs.stdout

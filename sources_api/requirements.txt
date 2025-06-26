@@ -1,0 +1,11 @@
+elasticsearch
+fastapi
+minio
+pandas
+prometheus-client
+psycopg2-binary
+pyspark
+pydantic
+requests
+uvicorn
+sqlalchemy

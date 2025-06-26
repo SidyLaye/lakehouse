@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<configuration>
+
+  <!-- 1. Connexion au méta-store Postgres -->
+  <property>
+    <name>javax.jdo.option.ConnectionURL</name>
+    <value>jdbc:postgresql://postgres:5432/hive_metastore</value>
+    <description>URL JDBC pour le méta‐store</description>
+  </property>
+  <property>
+    <name>javax.jdo.option.ConnectionDriverName</name>
+    <value>org.postgresql.Driver</value>
+    <description>Driver JDBC Postgres</description>
+  </property>
+  <property>
+    <name>javax.jdo.option.ConnectionUserName</name>
+    <value>hiveuser</value>
+  </property>
+  <property>
+    <name>javax.jdo.option.ConnectionPassword</name>
+    <value>hivepassword</value>
+  </property>
+
+  <!-- 2. Entrepôt Hive sur MinIO via S3A -->
+  <property>
+    <name>hive.metastore.warehouse.dir</name>
+    <value>s3a://lakehouse/warehouse</value>
+    <description>Répertoire warehouse sur le bucket Lakehouse de MinIO</description>
+  </property>
+  <property>
+    <name>hive.exec.scratchdir</name>
+    <value>/tmp/hive</value>
+    <description>Répertoire temporaire local</description>
+  </property>
+
+  <!-- 3. Configuration S3A (également présente dans core-site.xml de Hadoop) -->
+  <!-- Vous pouvez commenter ces lignes si elles figurent déjà dans core-site.xml -->
+  <property>
+    <name>fs.s3a.endpoint</name>
+    <value>http://localhost:9000</value>
+  </property>
+  <property>
+    <name>fs.s3a.access.key</name>
+    <value>minioadmin</value>
+  </property>
+  <property>
+    <name>fs.s3a.secret.key</name>
+    <value>minioadmin</value>
+  </property>
+  <property>
+    <name>fs.s3a.path.style.access</name>
+    <value>true</value>
+  </property>
+  <property>
+    <name>fs.s3a.connection.ssl.enabled</name>
+    <value>false</value>
+  </property>
+
+  <!-- 4. Répertoire local pour logs et métadonnées Hive -->
+  <property>
+    <name>hive.exec.local.scratchdir</name>
+    <value>/tmp/hive-local</value>
+  </property>
+
+</configuration>

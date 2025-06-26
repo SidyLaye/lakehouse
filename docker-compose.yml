@@ -1,52 +1,61 @@
 services:
   api:
     build: ./api
-    environment:
-      - PG_HOST=postgres
-      - PG_PORT=5432
-      - PG_USER=myuser
-      - PG_PASSWORD=mysupersecret
-      - PG_DB=analytics
-      - MINIO_ENDPOINT=http://minio:9000
-    volumes:
-      - ./data/files:/data/files
     ports:
       - '9999:9999'
-
+  sources_api:
+    build: ./sources_api
+    ports:
+      - '9998:9998'
+    depends_on:
+      - postgres
   lakehouse:
     build: ./lakehouse
     depends_on:
       - api
-      - minio
+      - sources_api
       - postgres
       - elasticsearch
     ports:
+      - '1000:1000'
+      - '5000:5000'
       - '9870:9870'
       - '8088:8088'
       - '7077:7077'
       - '8000:8000'
-
-  minio:
-    build: ./minio
-    ports:
       - '9000:9000'
       - '9001:9001'
-
   postgres:
     build: ./postgres
     ports:
       - '5432:5432'
-
   elasticsearch:
     build: ./elasticsearch
     ports:
       - '9200:9200'
-
   prometheus:
     build: ./prometheus
     ports:
       - '9090:9090'
+  grafana:
+    build: ./grafana
+    depends_on:
+      - prometheus
+      - postgres
+      - elasticsearch
+    ports:
+      - '3000:3000'
+  api_ml:
+    build: ./api_ml/api
+    ports:
+      - '9997:9997'
 
+  ui_api_ml:
+    build: ./api_ml/ui
+    ports:
+      - '8501:8501'
+    depends_on:
+      - api_ml
 networks:
   default:
     driver: bridge
