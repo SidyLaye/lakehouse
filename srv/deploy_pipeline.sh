@@ -8,7 +8,7 @@ AWS_CREDENTIALS_FILES=${AWS_CREDENTIALS_FILES:-../_credentials/aws_learner_lab_c
 SSH_KEY=${SSH_KEY:-../_credentials/labsuser.pem}
 KEY_NAME=${KEY_NAME:-labsuser}
 AMI_ID=${AMI_ID:-ami-053b0d53c279acc90}
-INSTANCE_TYPE=${INSTANCE_TYPE:-t3.medium}
+INSTANCE_TYPE=${INSTANCE_TYPE:-t3.xlarge}
 
 # 1) Terraform apply
 echo "[1/4] => Terraform apply"
