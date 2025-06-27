@@ -1,5 +1,21 @@
+<<<<<<< HEAD
 <!-- ⚠️ This README has been generated from the file(s) "blueprint.md" ⚠️-->
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)](#lakehouse)
+=======
+# lakehouse
+Pour run le projet sur AWS (Instances Ec2) :
+
+-Pull srv/
+
+-Mordifier les fichier sous srv/_credentials
+
+-modifier les variables dans srv/deploy_pipeline.sh et srv/infra/variables.tf
+
+-Run le script shell
+
+# lakehouse
+# Fraud Detection API
+>>>>>>> cb5b0ec07bd2b86755c768f132cd95d74bc651aa
 
 # ➤ lakehouse
 
