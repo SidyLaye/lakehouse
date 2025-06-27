@@ -3,7 +3,7 @@
   gather_facts: no
   tasks:
     - name: Test sudo sans mot de passe
-      ansible.builtin.command: sudo -n true
+      ansible.builtin.command: sudo -n true  # Vérifie si l'utilisateur peut utiliser sudo sans mot de passe
       register: sudo_test
       ignore_errors: yes
     - name: Arrêter si sudo ne fonctionne pas
@@ -11,25 +11,25 @@
         msg: "L'utilisateur ubuntu n'a pas les droits sudo sans mot de passe sur cette VM. Corrige la config sudoers."
       when: sudo_test.rc != 0
 
-- name: Wait for all hosts to be SSH-ready
+- name: Attendre que tous les hôtes soient prêts pour SSH
   hosts: all
   gather_facts: no
   tasks:
-    - name: Wait until port 22 is open
+    - name: Attendre que le port 22 soit ouvert (SSH)
       wait_for:
         port: 22
         state: started
-        delay: 10           # wait 10s before first check
-        timeout: 300        # give each host up to 5 minutes
+        delay: 10           # attend 10s avant la première vérification
+        timeout: 300        # laisse jusqu'à 5 minutes par hôte
 
 - name: Déployer chaque service via Docker (pull + run)
   hosts: all
   become: yes
   vars:
-    registry_url: registry.gitlab.com
-    project_path: sidylaye/lakehouse-lfs
+    registry_url: registry.gitlab.com  # URL du registre de conteneurs
+    project_path: sidylaye/lakehouse-lfs  # Chemin du projet dans le registre
     ports_map:
-      api: "-p 9999:9999"
+      api: "-p 9999:9999"  # Expose le port 9999 pour le service api
       sources_api: "-p 9998:9998"
       lakehouse: "-p 1000:1000 -p 5000:5000 -p 9870:9870 -p 8088:8088 -p 7077:7077 -p 8000:8000 -p 9000:9000 -p 9001:9001"
       postgres: "-p 5432:5432"

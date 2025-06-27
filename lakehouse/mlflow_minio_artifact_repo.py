@@ -7,10 +7,11 @@ import posixpath
 import tempfile
 import shutil
 
+# Classe personnalisée pour gérer les artefacts MLflow sur MinIO
 class MinioArtifactRepository(ArtifactRepository):
     def __init__(self, artifact_uri):
         super().__init__(artifact_uri)
-        # URI : minio://bucket/prefix
+        # Parse l'URI minio://bucket/prefix
         _, rest = artifact_uri.split("://", 1)
         parts = rest.split("/", 1)
         self.bucket = parts[0]
@@ -18,10 +19,12 @@ class MinioArtifactRepository(ArtifactRepository):
         endpoint = os.getenv("MINIO_ENDPOINT", "localhost:9000")
         access = os.getenv("MINIO_ROOT_USER", "minioadmin")
         secret = os.getenv("MINIO_ROOT_PASSWORD", "minioadmin")
+        # Initialise le client MinIO
         self.client = Minio(endpoint, access_key=access, secret_key=secret, secure=False)
         if not self.client.bucket_exists(self.bucket):
             self.client.make_bucket(self.bucket)
 
+    # Envoie tous les fichiers d'un dossier local vers MinIO
     def log_artifacts(self, local_dir, artifact_path=None):
         base_prefix = self.prefix.rstrip("/")
         if artifact_path:
@@ -33,6 +36,7 @@ class MinioArtifactRepository(ArtifactRepository):
                 object_name = f"{base_prefix}/{rel_path}".lstrip("/")
                 self.client.fput_object(self.bucket, object_name, local_path)
 
+    # Liste les artefacts présents dans le bucket/prefix
     def list_artifacts(self, path=None):
         base = self.prefix.rstrip("/")
         if path:
@@ -56,6 +60,7 @@ class MinioArtifactRepository(ArtifactRepository):
             results.append(FileInfo(path=fpath, is_dir=is_dir, file_size=size))
         return results
 
+    # Télécharge les artefacts depuis MinIO vers un dossier local
     def download_artifacts(self, artifact_path, dst_path):
         if dst_path is None:
             dst_path = tempfile.mkdtemp()
@@ -77,6 +82,7 @@ class MinioArtifactRepository(ArtifactRepository):
             resp.close()
             resp.release_conn()
 
+        # S'assure que le fichier MLmodel est bien à la racine du dossier téléchargé
         mlmodel_path = os.path.join(dst_path, "MLmodel")
         if not os.path.exists(mlmodel_path):
             for root, _, files in os.walk(dst_path):
@@ -86,6 +92,7 @@ class MinioArtifactRepository(ArtifactRepository):
 
         return dst_path
 
+# Enregistre ce repository personnalisé dans MLflow
 _artifact_repository_registry.register(
     "minio",
     MinioArtifactRepository

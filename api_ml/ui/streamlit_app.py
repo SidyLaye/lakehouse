@@ -11,7 +11,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- CSS personnalisé ---
+# --- CSS personnalisé pour l'affichage ---
 st.markdown("""
 <style>
   .main-header { font-size:2.5rem; text-align:center; margin-bottom:2rem; font-weight:bold; }
@@ -21,15 +21,17 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- URL de l'API dans la barre latérale ---
+# --- Saisie de l'URL de l'API dans la barre latérale ---
 API_URL = st.sidebar.text_input("🔗 API URL", "http://api_ml:9997")
 
 def api_ok():
+    """Teste la disponibilité de l'API."""
     try:
         return requests.get(f"{API_URL}/", timeout=3).status_code == 200
     except:
         return False
 
+# Vérification de l'accessibilité de l'API
 if not api_ok():
     st.sidebar.error("❌ API non accessible")
     st.stop()
@@ -42,7 +44,7 @@ else:
 # --- En-tête principal ---
 st.markdown('<h1 class="main-header">🛡️ Système de Détection de Fraude IA</h1>', unsafe_allow_html=True)
 
-# --- Onglets ---
+# --- Onglets principaux ---
 tab1, tab2 = st.tabs(["💳 Analyse Transaction", "⚡ Tests Rapides"])
 
 # --- Tab 1: Analyse d'une transaction ---
@@ -65,6 +67,7 @@ with tab1:
             num_cards         = st.number_input("🔢 Nombre de cartes", min_value=1, max_value=20, value=2)
         submitted = st.form_submit_button("🔍 Analyser")
 
+    # --- Envoi de la transaction à l'API et affichage du résultat ---
     if submitted:
         payload = {
             "amount": float(amount),
@@ -88,6 +91,7 @@ with tab1:
             st.metric("🔍 Est-ce une fraude ?", "Oui" if r["is_fraud"] else "Non")
             st.metric("📊 Confiance", r["confidence"])
 
+            # Affichage d'une alerte visuelle selon le score
             if p > 70:
                 st.markdown(f'<div class="fraud-alert">🚨 {p:.1f}% Probabilité de fraude</div>', unsafe_allow_html=True)
             elif p > 30:
@@ -102,6 +106,7 @@ with tab2:
     st.header("⚡ Tests Rapides Prédéfinis")
     st.info("🧪 Testez 3 scénarios types sans saisie manuelle")
 
+    # Trois scénarios de test prédéfinis
     normal = {
         "amount": 5000.0, "card_brand": "AMEX", "card_type": "Crédit", "merchant_state": "TX",
         "use_chip": "False", "credit_limit": 1000.0, "per_capita_income": 10000.0,

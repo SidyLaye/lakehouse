@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 def split_csv(input_file: str, output_prefix: str) -> None:
     """
     Lit un fichier CSV et le divise en quatre parties de tailles aussi proches que possible.
@@ -10,7 +11,7 @@ def split_csv(input_file: str, output_prefix: str) -> None:
     # Chargement du CSV dans un DataFrame
     df = pd.read_csv(input_file)
     total_rows = len(df)
-    chunk_size = total_rows // 4
+    chunk_size = total_rows // 4  # Taille de chaque segment (division entière)
 
     # Division en quatre segments
     for i in range(4):
@@ -28,9 +29,11 @@ def split_csv(input_file: str, output_prefix: str) -> None:
 if __name__ == "__main__":
     import argparse
 
+    # Analyse des arguments de la ligne de commande
     parser = argparse.ArgumentParser(description="Diviser un CSV en quatre parties")
     parser.add_argument("input_file", help="Chemin vers le fichier CSV d'entrée")
     parser.add_argument("output_prefix", help="Préfixe pour les fichiers CSV de sortie")
     args = parser.parse_args()
 
+    # Appel de la fonction principale avec les arguments fournis
     split_csv(args.input_file, args.output_prefix)

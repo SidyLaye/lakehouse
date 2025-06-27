@@ -1,6 +1,6 @@
 -- postgres/init.sql
 
--- 1) Conditionally create the three databases
+-- 1) Crée les trois bases de données si elles n'existent pas déjà
 SELECT 'CREATE DATABASE hive_metastore'
   WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'hive_metastore')\gexec
 
@@ -10,7 +10,7 @@ SELECT 'CREATE DATABASE analytics'
 SELECT 'CREATE DATABASE mydb'
   WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'mydb')\gexec
 
--- 2) Create the three roles (they’ll error if already there, but that’s ok)
+-- 2) Crée les trois rôles utilisateurs si besoin (ignore l'erreur si déjà existant)
 DO $$
 BEGIN
   IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'hiveuser') THEN
@@ -25,13 +25,13 @@ BEGIN
 END
 $$;
 
--- 3) Grant CONNECT on each DB
+-- 3) Donne le droit de connexion à chaque base pour les rôles concernés
 GRANT CONNECT ON DATABASE hive_metastore TO hiveuser;
 GRANT CONNECT ON DATABASE analytics       TO grafana_user;
 GRANT CONNECT ON DATABASE analytics       TO myuser;
 GRANT CONNECT ON DATABASE mydb            TO myuser;
 
--- 4) In each DB, adjust the PUBLIC schema so the correct role can CREATE/USE
+-- 4) Dans chaque base, ajuste le schéma PUBLIC pour donner les droits de création/usage
 \connect hive_metastore
 
 GRANT USAGE  ON SCHEMA public TO hiveuser;
@@ -46,7 +46,7 @@ ALTER SCHEMA public OWNER TO grafana_user;
 
 GRANT USAGE  ON SCHEMA public TO myuser;
 GRANT CREATE ON SCHEMA public TO myuser;
--- note: public remains owned by grafana_user, but myuser can also create
+-- note: public reste possédé par grafana_user, mais myuser peut aussi créer
 
 \connect mydb
 
@@ -54,7 +54,7 @@ GRANT USAGE  ON SCHEMA public TO myuser;
 GRANT CREATE ON SCHEMA public TO myuser;
 ALTER SCHEMA public OWNER TO myuser;
 
--- 5) Still in analytics: create your events table if missing, then grant access
+-- 5) Toujours dans analytics : crée la table events si absente, puis donne les droits
 \connect analytics
 
 CREATE TABLE IF NOT EXISTS events (

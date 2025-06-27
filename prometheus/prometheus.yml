@@ -1,4 +1,5 @@
+# Fichier de configuration Prometheus
 scrape_configs:
-  - job_name: 'orchestrator'
+  - job_name: 'orchestrator'  # Nom du job de scraping
     static_configs:
-      - targets: ['lakehouse:8000']
+      - targets: ['lakehouse:8000']  # Cible à surveiller (exporter Prometheus sur le conteneur lakehouse)

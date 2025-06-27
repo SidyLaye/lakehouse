@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# === Importations système et librairies ===
 import os
 import sys
 import gc
@@ -17,7 +18,7 @@ from email.mime.text import MIMEText
 # 1) Import Elasticsearch AVANT tout réglage de logging
 from elasticsearch import Elasticsearch, exceptions as es_exceptions, helpers
 
-# --- Configuration globale -------------------------
+# --- Configuration globale des variables d'environnement et services externes ---
 SPARK_MASTER = os.getenv("SPARK_MASTER", "local[*]")
 SMTP_HOST    = os.getenv('SMTP_HOST',  'smtp.gmail.com')
 SMTP_PORT    = int(os.getenv('SMTP_PORT',  '587'))
@@ -36,24 +37,22 @@ ES_BULK_SIZE = int(os.getenv('ES_BULK_SIZE', '100'))
 ES_FLUSH_INT = int(os.getenv('ES_FLUSH_INTERVAL', '5'))
 PROM_PORT    = int(os.getenv('PROM_PORT',   '8000'))
 
-# --- Logging console (handler de base) ---------------
+# --- Configuration du logging console ---
 root = logging.getLogger()
 root.setLevel(logging.INFO)
 console_handler = logging.StreamHandler(sys.stdout)
 console_handler.setFormatter(logging.Formatter('[%(asctime)s] %(levelname)s %(message)s'))
 root.addHandler(console_handler)
 
-# Ce logger « orchestrator » pour la suite
+# Logger principal pour l'orchestrateur
 logger = logging.getLogger('orchestrator')
 logger.propagate = True   # remonte vers root→console
 
-
-# --- BulkESHandler corrigé (RLock + masquage des logs ES pendant bulk) -------------
+# --- Handler personnalisé pour logs Elasticsearch (bufferisé + bulk) ---
 class BulkESHandler(logging.Handler):
     """
     Handler qui bufferise les logs et les envoie en bulk vers Elasticsearch.
-    On utilise un RLock pour éviter les deadlocks si, pendant un helpers.bulk(),
-    la lib ES produit un log qui ré-appelle emit() dans le même thread.
+    Utilise un RLock pour éviter les deadlocks si la lib ES produit un log pendant bulk.
     """
     def __init__(self, index_name,
                  bulk_size=ES_BULK_SIZE,
@@ -67,11 +66,10 @@ class BulkESHandler(logging.Handler):
         self.max_retries    = max_retries
         self.backoff_factor = backoff_factor
         self.actions        = []
-        # → On met un RLock, pas un Lock
         self.lock           = threading.RLock()
         self.es             = None
 
-        # On masque temporairement les loggers ES (level WARNING)
+        # Masque temporairement les logs ES pendant bulk
         es_logger = logging.getLogger('elasticsearch')
         et_logger = logging.getLogger('elastic_transport.transport')
         prev_es_level = es_logger.level
@@ -101,7 +99,7 @@ class BulkESHandler(logging.Handler):
             except Exception:
                 pass
 
-        # On restaure immédiatement le niveau d’avant
+        # Restaure le niveau de log initial
         es_logger.setLevel(prev_es_level)
         et_logger.setLevel(prev_et_level)
 
@@ -123,8 +121,7 @@ class BulkESHandler(logging.Handler):
         }
         action = {"_index": self.index_name, "_source": entry}
 
-        # → Avec RLock, même si le même thread tient déjà le verrou (pendant _flush),
-        #   il pourra le ré-acquérir ici sans se bloquer.
+        # Ajoute au buffer, flush si bulk_size atteint
         with self.lock:
             self.actions.append(action)
             if len(self.actions) >= self.bulk_size:
@@ -168,7 +165,7 @@ class BulkESHandler(logging.Handler):
                 logging.getLogger(__name__).warning(f"[BulkESHandler] Bulk ES échoué : {e}")
                 break
 
-        # On restaure les niveaux initiaux des loggers ES
+        # Restaure les niveaux initiaux des loggers ES
         es_logger.setLevel(prev_es_level)
         et_logger.setLevel(prev_et_level)
 
@@ -181,13 +178,11 @@ class BulkESHandler(logging.Handler):
             if self.actions:
                 self._flush()
 
-
-# --- Instanciation du handler ES (sans l’attacher tout de suite) -------------
+# --- Instanciation du handler ES (flush à la sortie) ---
 bulk_handler = BulkESHandler(ES_INDEX)
 atexit.register(bulk_handler.flush_remaining)
 
-
-# --- SMTP et alertes email ------------------------
+# --- SMTP et alertes email (en cas d'échec pipeline) ---
 alerts_enabled = True
 if not (SMTP_USER and SMTP_PASS and ALERT_EMAIL):
     logger.warning("❗ SMTP non configuré ; désactivation des alertes email.")
@@ -214,15 +209,13 @@ def send_alert(subject: str, body: str):
     except Exception as e:
         logger.warning(f"SMTP send error : {e}")
 
-
-# --- Prometheus metrics ---------------------------
+# --- Prometheus metrics pour monitoring pipeline ---
 STAGE_DURATION = Histogram('pipeline_stage_duration_seconds',
                            'Durée (s) de chaque étape du pipeline', ['stage'])
 STAGE_STATUS   = Counter('pipeline_stage_status_total',
                          "Nombre d'états (démarrée, succès, échec) par étape", ['stage', 'status'])
 
-
-# --- Signal handling ------------------------------
+# --- Gestion des signaux pour suivre l'avancement du pipeline ---
 from pipeline.signals import (
     FEEDER_SIG_CARD,
     FEEDER_SIG_USER,
@@ -279,8 +272,7 @@ ignore_signals = [
 for sig in ignore_signals:
     signal.signal(sig, _ignore_intermediate)
 
-
-# --- Fonction pour lancer une étape Spark -------------
+# --- Fonction pour lancer une étape Spark (pipeline) ---
 def run_stage(stage: str, script: str, extra_args=None):
     cmd = [
         'spark-submit', '--master', SPARK_MASTER, '--deploy-mode', 'client','--jars', '/app/pipeline/postgresql-42.7.5.jar','--driver-memory', '10g','--executor-memory', '10g','--py-files', '/app/pipeline/mlflow_minio_artifact_repo.py',
@@ -312,8 +304,7 @@ def run_stage(stage: str, script: str, extra_args=None):
         send_alert(f"[ALERTE] pipeline : {stage} échoué", msg)
         sys.exit(ret)
 
-
-# --- Programme principal -----------------------------
+# --- Programme principal : séquence du pipeline ---
 if __name__ == '__main__':
     # 1) Affichage console initial (avant attachement du handler ES)
     logger.info(f"ES_HOST={ES_HOST}, ES_INDEX={ES_INDEX}, BULK_SIZE={ES_BULK_SIZE}, FLUSH_INTERVAL={ES_FLUSH_INT}s")

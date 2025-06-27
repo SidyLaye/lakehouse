@@ -1,4 +1,4 @@
-# ansible/hosts.ini.j2
+# Template Jinja2 pour générer le fichier d'inventaire Ansible hosts.ini
 [all]
 {% for name, ip in private_ips.items() -%}
 {{ name }} ansible_host={{ ip }} ansible_user=ubuntu ansible_ssh_private_key_file=../_credentials/labsuser.pem

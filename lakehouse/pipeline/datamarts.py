@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# === Importations ===
 import os
 import sys
 import signal
@@ -23,7 +24,7 @@ from signals import (
 HIVE_DB    = "fraud_detection"
 HIVE_TABLE = "preprocessed_full"
 
-# PostgreSQL JDBC settings via env (or defaults)
+# Paramètres PostgreSQL (JDBC)
 PG_HOST     = os.getenv("PG_HOST", "postgres")
 PG_PORT     = os.getenv("PG_PORT", "5432")
 PG_DB       = os.getenv("PG_NAME", "analytics")
@@ -36,14 +37,14 @@ JDBC_URL = (
     f"?user={PG_USER}&password={PG_PASSWORD}"
 )
 
-# Datamart tables (fully qualified)
+# Noms des tables datamarts
 DM_CLIENT_FEATURES    = f"{PG_SCHEMA}.dm_client_features"
 DM_CARD_FEATURES      = f"{PG_SCHEMA}.dm_card_features"
 DM_VELOCITY_METRICS   = f"{PG_SCHEMA}.dm_client_velocity"
 DM_MCC_RISK           = f"{PG_SCHEMA}.dm_mcc_fraud_risk"
 DM_TIME_DISTRIBUTION  = f"{PG_SCHEMA}.dm_time_of_day_fraud"
 
-# Signal mappings
+# Mapping des signaux
 FILE_SIGNALS = {
     "ClientFeatures":   DM_SIG_CLIENT_FEATURES,
     "CardFeatures":     DM_SIG_CARD_FEATURES,
@@ -53,12 +54,13 @@ FILE_SIGNALS = {
 }
 EXTRA_SIGNALS = {"Done": DM_SIG_DONE}
 
-# Path to your Postgres JDBC JAR:
+# Chemin du JAR JDBC Postgres
 POSTGRES_JAR_PATH = os.path.join(os.path.dirname(__file__), "postgresql-42.7.5.jar")
 
-# --- (MODIF) On déclare une variable globale pour stocker le PID du watcher ---
+# PID du watcher pour signaux inter-processus
 WATCHER_PID = None
 
+# === Initialisation Spark ===
 def init_spark() -> SparkSession:
     return (
         SparkSession.builder
@@ -76,14 +78,10 @@ def init_spark() -> SparkSession:
             .getOrCreate()
     )
 
-
+# === Fonction d'écriture dans PostgreSQL et gestion des signaux ===
 def write_pg(df, table: str, sig: int):
     """
-    Pour la table `table` (e.g. "public.dm_client_features"):
-    1) Crée la table si elle n'existe pas (avec CREATE TABLE IF NOT EXISTS).
-    2) Supprime les enregistrements existants où situation_date = replace_date.
-    3) Insère les nouvelles données (mode append).
-    4) Envoie le signal `sig` uniquement au watcher (et non au processus courant).
+    Crée la table si besoin, supprime l'existante, insère les données, puis envoie un signal.
     """
     try:
         conn = psycopg2.connect(
@@ -92,7 +90,7 @@ def write_pg(df, table: str, sig: int):
         )
         cur = conn.cursor()
 
-        # 1) Création conditionnelle de la table selon son nom
+        # Création conditionnelle de la table selon son nom
         if table.endswith("dm_client_features"):
             cur.execute(f"""
                 CREATE TABLE IF NOT EXISTS {table} (
@@ -162,7 +160,7 @@ def write_pg(df, table: str, sig: int):
 
         conn.commit()
 
-        # 2) Suppression des anciennes lignes pour la date donnée
+        # Suppression de la table existante (pour overwrite)
         cur.execute(f"DROP TABLE IF EXISTS {table}")
         conn.commit()
 
@@ -174,27 +172,27 @@ def write_pg(df, table: str, sig: int):
         print(f"[ERROR] Erreur sur la table {table} : {e}", file=sys.stderr)
         return
 
-    # 3) Écriture du DataFrame en mode append via JDBC
+    # Écriture du DataFrame en mode append via JDBC
     df.write \
       .mode("append") \
       .jdbc(JDBC_URL, table, properties={"driver": "org.postgresql.Driver"})
     print(f"→ Données insérées dans {table}")
 
-    # 4) (MODIF) Envoi du signal uniquement au watcher, sans tuer le processus principal
+    # Envoi du signal uniquement au watcher
     global WATCHER_PID
     if WATCHER_PID is not None:
         os.kill(WATCHER_PID, sig)
 
-
+# === Programme principal ===
 def main():
-    # 1) (MODIF) On récupère le PID du watcher passé en argument
+    # Récupère le PID du watcher passé en argument
     global WATCHER_PID
     WATCHER_PID = int(sys.argv[1]) if len(sys.argv) > 1 else None
 
-    # 2) Initialisation de Spark
+    # Initialisation de Spark
     spark = init_spark()
 
-    # 3) Chargement de la table Hive et conversion de situation_date en DATE
+    # Chargement de la table Hive et conversion de situation_date en DATE
     df_full = (
         spark
           .table(f"{HIVE_DB}.{HIVE_TABLE}")
@@ -271,15 +269,14 @@ def main():
     )
     write_pg(time_dist, DM_TIME_DISTRIBUTION, FILE_SIGNALS["TimeDistribution"])
 
-    # 10) Libération mémoire
+    # Libération mémoire
     df_full.unpersist()
 
-    # 11) Signal “DONE” → on notifie uniquement le watcher
+    # Signal “DONE” → on notifie uniquement le watcher
     if WATCHER_PID is not None:
         os.kill(WATCHER_PID, DM_SIG_DONE)
 
     spark.stop()
-
 
 if __name__ == "__main__":
     main()

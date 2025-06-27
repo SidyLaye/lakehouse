@@ -22,6 +22,7 @@ if [ ! -f /home/hdfs/.ssh/id_rsa ]; then
 fi
 
 # 2) Pré‐ajouter localhost dans known_hosts pour éviter l’invite interactive
+# (utile pour les accès SSH locaux)
 echo "→ Ajout de localhost dans known_hosts"
 mkdir -p /home/hdfs/.ssh
 ssh-keyscan -H localhost >> /home/hdfs/.ssh/known_hosts
@@ -33,6 +34,7 @@ minio server /data --console-address ":9001" &
 echo "→ MinIO démarré sur ports 9000 (API) et 9001 (Console)"
 sleep 2
 
+# Configuration du client MinIO (mc) et création du bucket
 mc alias set local http://localhost:9000 \
     "${MINIO_ROOT_USER:-minioadmin}" "${MINIO_ROOT_PASSWORD:-minioadmin}" --api S3v4
 echo "→ Alias MC configuré"
@@ -50,7 +52,7 @@ fi
 echo "→ Démarrage Hadoop"
 $HADOOP_HOME/sbin/start-all.sh
 
-# 3) Attendre Postgres
+# 3) Attendre Postgres (vérifie que la base est prête avant de continuer)
 echo -n "→ Waiting for PostgreSQL…"
 until psql "postgresql://hiveuser:hivepassword@postgres:5432/hive_metastore?sslmode=disable" -c '\q' 2>/dev/null; do
   echo -n "."
@@ -111,11 +113,12 @@ mlflow ui \
   --default-artifact-root minio://lakehouse/mlflow-artifacts \
   &
   
+# Démarre un serveur HTTP pour exposer les artefacts du pipeline
 python3 -m http.server 1000 \
     --bind 0.0.0.0 \
     --directory /app/pipeline &
 
-# 6) Lancer l’orchestrateur
+# 6) Lancer l’orchestrateur (pipeline principal)
 bash -lc '
   export PATH=/opt/hadoop/bin:$PATH
   export HADOOP_HOME=/opt/hadoop

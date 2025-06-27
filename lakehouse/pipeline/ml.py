@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# === Importations ===
 import os
 import sys
 import mlflow_minio_artifact_repo
@@ -25,7 +26,7 @@ MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT", "localhost:9000")
 MINIO_ACCESS_KEY = os.getenv("MINIO_ROOT_USER", "minioadmin")
 MINIO_SECRET_KEY = os.getenv("MINIO_ROOT_PASSWORD", "minioadmin")
 
-# Paramètres de ressources
+# Paramètres de ressources Spark
 DRIVER_MEMORY   = os.getenv("SPARK_DRIVER_MEMORY", "8g")
 EXECUTOR_MEMORY = os.getenv("SPARK_EXECUTOR_MEMORY", "8g")
 EXECUTOR_CORES  = os.getenv("SPARK_EXECUTOR_CORES", "1")
@@ -35,13 +36,18 @@ NUM_EXECUTORS   = os.getenv("SPARK_EXECUTOR_INSTANCES", "1")
 mlflow.set_tracking_uri(MLFLOW_URI)
 mlflow.set_experiment(EXPERIMENT)
 
-# Set environment variables for MLflow S3 compatibility
+# Variables d'environnement pour compatibilité S3/MinIO
 os.environ["AWS_ACCESS_KEY_ID"] = MINIO_ACCESS_KEY
 os.environ["AWS_SECRET_ACCESS_KEY"] = MINIO_SECRET_KEY
 os.environ["MLFLOW_S3_ENDPOINT_URL"] = f"http://{MINIO_ENDPOINT}"
 
 # --- INITIALISATION SPARK ---
 def init_spark():
+    """Initialise une session Spark avec les configurations nécessaires pour se connecter à MinIO et Hive.
+
+    Retourne:
+        SparkSession: Une session Spark configurée.
+    """
     builder = SparkSession.builder.appName("ml_pipeline_compare") \
         .config("spark.hadoop.fs.s3a.endpoint", MINIO_ENDPOINT) \
         .config("spark.hadoop.fs.s3a.access.key", MINIO_ACCESS_KEY) \
@@ -63,6 +69,17 @@ def init_spark():
 
 # --- PRÉ-TRAITEMENT PIPELINE ---
 def prep_pipeline(cat_cols, num_cols, assembler_out="features"):
+    """Prépare la pipeline de prétraitement des données, incluant l'indexation des chaînes de caractères, l'encodage
+    one-hot et l'assemblage des vecteurs de caractéristiques.
+
+    Args:
+        cat_cols (list): Liste des colonnes catégorielles.
+        num_cols (list): Liste des colonnes numériques.
+        assembler_out (str): Nom de la colonne de sortie pour l'assembleur de vecteurs.
+
+    Retourne:
+        list: Liste des étapes de prétraitement à intégrer dans la pipeline Spark.
+    """
     indexers = [StringIndexer(inputCol=c, outputCol=f"{c}_idx", handleInvalid="keep") for c in cat_cols]
     encoders = [OneHotEncoder(inputCol=f"{c}_idx", outputCol=f"{c}_ohe") for c in cat_cols]
     assembler = VectorAssembler(
@@ -74,6 +91,9 @@ def prep_pipeline(cat_cols, num_cols, assembler_out="features"):
 
 # --- PROGRAMME PRINCIPAL ---
 def main():
+    """Point d'entrée principal du script. Gère l'initialisation de Spark, le chargement et la transformation des
+    données, l'entraînement et l'évaluation des modèles, et la sauvegarde des résultats et des modèles.
+    """
     watcher_pid = int(sys.argv[1]) if len(sys.argv) > 1 else None
 
     spark = init_spark()

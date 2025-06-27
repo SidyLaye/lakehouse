@@ -1,2 +1,4 @@
+# Fichier de configuration Git LFS (Large File Storage)
+# Définit l’URL du serveur LFS utilisé pour stocker les gros fichiers suivis par Git
 [lfs]
   url = "https://gitlab.com/SidyLaye/lakehouse-lfs.git/info/lfs"

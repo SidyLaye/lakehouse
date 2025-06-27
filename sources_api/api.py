@@ -7,15 +7,16 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 import logging
 
-# — your configuration —
+# — Configuration du dossier de données et paramètres de retry —
 DATA_DIR = "transactions_fraud_datasets"
 MAX_RETRIES = 5
-SLEEP_BETWEEN = 10  # seconds
+SLEEP_BETWEEN = 10  # secondes
 
-# — logger setup —
+# — Configuration du logger —
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("raw-files-api")
 
+# Création de l'application FastAPI
 app = FastAPI(
     title="Raw Files API",
     description="Expose tels quels tous les fichiers du dossier transactions_fraud_datasets",
@@ -37,7 +38,7 @@ def wait_for_data_dir():
     logger.error(f"[startup] Data dir '{DATA_DIR}' still missing after {MAX_RETRIES} attempts, exiting.")
     sys.exit(1)
 
-
+# Route pour lister tous les fichiers disponibles dans DATA_DIR
 @app.get("/files", response_model=List[str])
 def list_files():
     """
@@ -49,7 +50,7 @@ def list_files():
         logger.exception("Error listing files")
         raise HTTPException(status_code=500, detail=f"Impossible de lister '{DATA_DIR}': {e}")
 
-
+# Route pour servir un fichier brut depuis DATA_DIR
 @app.get("/files/{filename}")
 def serve_file(filename: str):
     """
@@ -70,7 +71,7 @@ def serve_file(filename: str):
         filename=filename
     )
 
-
+# Lancement local pour debug
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("api:app", host="0.0.0.0", port=9998, reload=True)

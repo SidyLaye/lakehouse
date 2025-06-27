@@ -1,11 +1,16 @@
-elasticsearch
-fastapi
-minio
-pandas
-prometheus-client
-psycopg2-binary
-pyspark
-pydantic
-requests
-uvicorn
-sqlalchemy
+# Fichier requirements.txt — liste des dépendances Python nécessaires pour l'API sources_api
+# Chaque ligne correspond à un package à installer dans l'environnement Python
+# Ces dépendances sont requises pour le fonctionnement de l'API, la connexion à la base de données,
+# la gestion des requêtes HTTP, la manipulation de données, etc.
+
+elasticsearch           # Client Python pour Elasticsearch
+fastapi                 # Framework web pour créer des API rapides
+minio                   # Client pour le stockage objet compatible S3 (MinIO)
+pandas                  # Manipulation et analyse de données tabulaires
+prometheus-client       # Exportation de métriques pour Prometheus
+psycopg2-binary         # Connecteur PostgreSQL pour Python
+pyspark                 # Interface Python pour Apache Spark
+pydantic                # Validation de données et gestion des modèles (utilisé par FastAPI)
+requests                # Requêtes HTTP simples en Python
+uvicorn                 # Serveur ASGI performant pour FastAPI
+sqlalchemy              # ORM et toolkit SQL pour Python

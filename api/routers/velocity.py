@@ -1,11 +1,14 @@
+# Importation des modules nécessaires
 from fastapi import APIRouter, HTTPException, Query
 from typing import List, Optional
 import psycopg2
 from database import get_connection, release_connection
 from schemas import ClientVelocity
 
+# Création du routeur FastAPI pour la vélocité client
 router = APIRouter(prefix="/velocity", tags=["Velocity"])
 
+# Route GET pour lister la vélocité des clients avec pagination
 @router.get("/", response_model=List[ClientVelocity])
 def list_velocity(limit: int = Query(100, description="Nombre max de résultats"),
                   offset: int = Query(0, description="Offset pour la pagination")):
@@ -15,6 +18,7 @@ def list_velocity(limit: int = Query(100, description="Nombre max de résultats"
     conn = get_connection()
     try:
         cur = conn.cursor()
+        # Requête SQL pour récupérer la vélocité des clients
         query = f"""
             SELECT client_id, avg_daily_txn, max_daily_txn
             FROM public.dm_client_velocity
@@ -24,6 +28,7 @@ def list_velocity(limit: int = Query(100, description="Nombre max de résultats"
         cur.execute(query, (limit, offset))
         rows = cur.fetchall()
         result = []
+        # Transformation des résultats SQL en objets Pydantic
         for r in rows:
             result.append(ClientVelocity(
                 client_id=r[0],
@@ -37,6 +42,7 @@ def list_velocity(limit: int = Query(100, description="Nombre max de résultats"
         cur.close()
         release_connection(conn)
 
+# Route GET pour récupérer la vélocité d'un client spécifique
 @router.get("/{client_id}", response_model=ClientVelocity)
 def get_velocity(client_id: str):
     """
@@ -45,6 +51,7 @@ def get_velocity(client_id: str):
     conn = get_connection()
     try:
         cur = conn.cursor()
+        # Requête SQL pour un client précis
         query = f"""
             SELECT client_id, avg_daily_txn, max_daily_txn
             FROM public.dm_client_velocity

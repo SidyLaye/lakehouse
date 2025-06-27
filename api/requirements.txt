@@ -1,10 +1,11 @@
-elasticsearch
-fastapi
-minio
-pandas
-prometheus-client
-psycopg2-binary
-pyspark
-pydantic
-requests
-uvicorn
+# Liste des dépendances Python nécessaires pour l'API FastAPI
+elasticsearch         # Client pour Elasticsearch (non utilisé directement ici mais utile pour logs ou recherche)
+fastapi               # Framework web principal pour l'API
+minio                 # Client pour MinIO (stockage objet, non utilisé ici directement)
+pandas                # Manipulation de données (utile pour traitement de dataframes)
+prometheus-client     # Exportation de métriques Prometheus
+psycopg2-binary       # Driver PostgreSQL pour Python
+pyspark               # Utilisé pour Spark (traitement distribué, pas utilisé dans ce dossier)
+pydantic              # Validation de schémas et modèles de données
+requests              # Requêtes HTTP (utile pour appels externes)
+uvicorn               # Serveur ASGI pour lancer FastAPI

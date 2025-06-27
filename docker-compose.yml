@@ -1,23 +1,25 @@
+# Fichier de configuration docker-compose pour orchestrer tous les services du projet Lakehouse
+# Chaque service correspond à un conteneur Docker, avec ses ports exposés et ses dépendances éventuelles
 services:
   api:
-    build: ./api
+    build: ./api                  # Construit l'image à partir du Dockerfile du dossier ./api
     ports:
-      - '9999:9999'
+      - '9999:9999'              # Expose le port 9999 (API FastAPI principale)
   sources_api:
-    build: ./sources_api
+    build: ./sources_api          # API source de données
     ports:
       - '9998:9998'
     depends_on:
-      - postgres
+      - postgres                 # Démarre après la base de données
   lakehouse:
-    build: ./lakehouse
+    build: ./lakehouse            # Service principal de traitement et orchestration
     depends_on:
       - api
       - sources_api
       - postgres
       - elasticsearch
     ports:
-      - '1000:1000'
+      - '1000:1000'              # Ports pour Spark, MLflow, MinIO, etc.
       - '5000:5000'
       - '9870:9870'
       - '8088:8088'
@@ -26,19 +28,19 @@ services:
       - '9000:9000'
       - '9001:9001'
   postgres:
-    build: ./postgres
+    build: ./postgres             # Base de données PostgreSQL
     ports:
       - '5432:5432'
   elasticsearch:
-    build: ./elasticsearch
+    build: ./elasticsearch        # Moteur de recherche Elasticsearch
     ports:
       - '9200:9200'
   prometheus:
-    build: ./prometheus
+    build: ./prometheus           # Monitoring Prometheus
     ports:
       - '9090:9090'
   grafana:
-    build: ./grafana
+    build: ./grafana              # Visualisation Grafana
     depends_on:
       - prometheus
       - postgres
@@ -46,16 +48,16 @@ services:
     ports:
       - '3000:3000'
   api_ml:
-    build: ./api_ml/api
+    build: ./api_ml/api           # API Machine Learning
     ports:
       - '9997:9997'
-
   ui_api_ml:
-    build: ./api_ml/ui
+    build: ./api_ml/ui            # Interface utilisateur Streamlit pour l'API ML
     ports:
       - '8501:8501'
     depends_on:
       - api_ml
+# Réseau Docker par défaut (bridge)
 networks:
   default:
     driver: bridge

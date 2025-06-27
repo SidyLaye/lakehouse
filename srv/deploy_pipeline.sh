@@ -1,16 +1,16 @@
 #!/bin/bash
 set -e
 
-# (1) Pick up overrides or defaults
-AWS_PROFILE=${AWS_PROFILE:-default}
-AWS_REGION=${AWS_REGION:-us-east-1}
-AWS_CREDENTIALS_FILES=${AWS_CREDENTIALS_FILES:-../_credentials/aws_learner_lab_credentials}
-SSH_KEY=${SSH_KEY:-../_credentials/labsuser.pem}
-KEY_NAME=${KEY_NAME:-labsuser}
-AMI_ID=${AMI_ID:-ami-053b0d53c279acc90}
-INSTANCE_TYPE=${INSTANCE_TYPE:-t3.medium}
+# (1) Récupération des variables d'environnement ou utilisation des valeurs par défaut
+AWS_PROFILE=${AWS_PROFILE:-default}           # Profil AWS à utiliser
+AWS_REGION=${AWS_REGION:-us-east-1}           # Région AWS
+AWS_CREDENTIALS_FILES=${AWS_CREDENTIALS_FILES:-../_credentials/aws_learner_lab_credentials}  # Fichier d'identifiants AWS
+SSH_KEY=${SSH_KEY:-../_credentials/labsuser.pem}  # Clé SSH pour accéder aux VMs
+KEY_NAME=${KEY_NAME:-labsuser}                # Nom de la clé SSH dans AWS
+AMI_ID=${AMI_ID:-ami-053b0d53c279acc90}       # ID de l'image AMI Ubuntu
+INSTANCE_TYPE=${INSTANCE_TYPE:-t3.medium}     # Type d'instance EC2
 
-# 1) Terraform apply
+# 1) Déploiement de l'infrastructure avec Terraform (ici tofu)
 echo "[1/4] => Terraform apply"
 cd infra
 tofu init
@@ -22,15 +22,15 @@ tofu apply -auto-approve \
   -var="ami_id=$AMI_ID" \
   -var="instance_type=$INSTANCE_TYPE"
 
-# 2) Export Terraform outputs & generate INI inventory
+# 2) Export des outputs Terraform et génération de l'inventaire INI pour Ansible
 echo "[2/4] => Génération inventaire Ansible"
 tofu output -json > ../ansible/terraform_output.json
 cd ../ansible
 
-# Generate hosts.ini (not hosts.yml)
+# Génération du fichier hosts.ini à partir du template Jinja2 et des IPs Terraform
 python3 gen_inventory.py terraform_output.json
 
-# 3) Run Ansible playbook against hosts.ini
+# 3) Exécution du playbook Ansible sur les hôtes provisionnés
 echo "[3/4] => Déploiement Ansible"
 ansible-playbook \
   -i hosts.ini \
@@ -41,7 +41,7 @@ ansible-playbook \
 echo "[4/4] => Pipeline complété!"
 
 # Affichage des URLs d'accès pour les services exposés
-PUBLIC_IPS=$(grep -E 'ui_api_ml |grafana |elasticsearch ' hosts.ini | awk '{print $1" "$2}' | sed 's/ansible_host=//')
+PUBLIC_IPS=$(grep -E 'ui_api_ml |grafana |elasticsearch ' ansible/hosts.ini | awk '{print $1" "$2}' | sed 's/ansible_host=//')
 echo -e "\nAccès aux services :"
 while read -r entry; do
   name=$(echo $entry | awk '{print $1}')
@@ -52,3 +52,5 @@ while read -r entry; do
     elasticsearch)  echo "- Elasticsearch      : http://$ip:9200" ;;
   esac
 done <<< "$PUBLIC_IPS"
+
+# (Optionnel) Ajouter ici d'autres étapes de post-déploiement si besoin

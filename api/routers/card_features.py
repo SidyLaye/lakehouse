@@ -1,11 +1,14 @@
+# Importation des modules nécessaires
 from fastapi import APIRouter, HTTPException, Query
 from typing import List, Optional
 import psycopg2
 from database import get_connection, release_connection
 from schemas import CardFeatures
 
+# Création du routeur FastAPI pour les features carte
 router = APIRouter(prefix="/card_features", tags=["CardFeatures"])
 
+# Route GET pour lister les features carte avec pagination
 @router.get("/", response_model=List[CardFeatures])
 def list_card_features(limit: int = Query(100, description="Nombre max de résultats"), 
                        offset: int = Query(0, description="Offset pour la pagination")):
@@ -15,6 +18,7 @@ def list_card_features(limit: int = Query(100, description="Nombre max de résul
     conn = get_connection()
     try:
         cur = conn.cursor()
+        # Requête SQL pour récupérer les features carte
         query = f"""
             SELECT tx_card_id, card_type, tx_count, fraud_count,
                    avg_amount, drop_count, fraud_rate, drop_rate
@@ -25,6 +29,7 @@ def list_card_features(limit: int = Query(100, description="Nombre max de résul
         cur.execute(query, (limit, offset))
         rows = cur.fetchall()
         result = []
+        # Transformation des résultats SQL en objets Pydantic
         for r in rows:
             result.append(CardFeatures(
                 tx_card_id=r[0],
@@ -43,6 +48,7 @@ def list_card_features(limit: int = Query(100, description="Nombre max de résul
         cur.close()
         release_connection(conn)
 
+# Route GET pour récupérer les features d'une carte spécifique
 @router.get("/{tx_card_id}", response_model=CardFeatures)
 def get_card_features(tx_card_id: str):
     """
@@ -51,6 +57,7 @@ def get_card_features(tx_card_id: str):
     conn = get_connection()
     try:
         cur = conn.cursor()
+        # Requête SQL pour une carte précise
         query = f"""
             SELECT tx_card_id, card_type, tx_count, fraud_count,
                    avg_amount, drop_count, fraud_rate, drop_rate

@@ -1,11 +1,14 @@
+# Importation des modules nécessaires
 from fastapi import APIRouter, HTTPException, Query
 from typing import List, Optional
 import psycopg2
 from database import get_connection, release_connection
 from schemas import TimeDistribution
 
+# Création du routeur FastAPI pour la distribution temporelle
 router = APIRouter(prefix="/time_distribution", tags=["TimeDistribution"])
 
+# Route GET pour lister la distribution temporelle avec pagination
 @router.get("/", response_model=List[TimeDistribution])
 def list_time_distribution(limit: int = Query(24, description="Nombre max de résultats (0–23 heures)"),
                            offset: int = Query(0, description="Offset pour la pagination")):
@@ -15,6 +18,7 @@ def list_time_distribution(limit: int = Query(24, description="Nombre max de ré
     conn = get_connection()
     try:
         cur = conn.cursor()
+        # Requête SQL pour récupérer la distribution temporelle
         query = f"""
             SELECT hour, tx_count, fraud_count, drop_count, fraud_rate, drop_rate
             FROM public.dm_time_of_day_fraud
@@ -24,6 +28,7 @@ def list_time_distribution(limit: int = Query(24, description="Nombre max de ré
         cur.execute(query, (limit, offset))
         rows = cur.fetchall()
         result = []
+        # Transformation des résultats SQL en objets Pydantic
         for r in rows:
             result.append(TimeDistribution(
                 hour=r[0],
@@ -40,6 +45,7 @@ def list_time_distribution(limit: int = Query(24, description="Nombre max de ré
         cur.close()
         release_connection(conn)
 
+# Route GET pour récupérer la distribution d'une heure précise
 @router.get("/{hour}", response_model=TimeDistribution)
 def get_time_distribution(hour: int):
     """
@@ -50,6 +56,7 @@ def get_time_distribution(hour: int):
     conn = get_connection()
     try:
         cur = conn.cursor()
+        # Requête SQL pour une heure précise
         query = f"""
             SELECT hour, tx_count, fraud_count, drop_count, fraud_rate, drop_rate
             FROM public.dm_time_of_day_fraud

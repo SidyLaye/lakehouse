@@ -1,9 +1,10 @@
 provider "aws" {
-  region                   = var.aws_region
-  profile                  = var.aws_profile
-  shared_credentials_files = var.aws_credentials_files
+  region                   = var.aws_region           # Région AWS à utiliser
+  profile                  = var.aws_profile          # Profil AWS (fichier credentials)
+  shared_credentials_files = var.aws_credentials_files # Chemin vers le fichier d'identifiants
 }
 
+# Recherche l'AMI Ubuntu la plus récente (24.04 LTS)
 data "aws_ami" "ubuntu" {
   most_recent = true
   owners      = ["099720109477"]
@@ -26,17 +27,17 @@ data "aws_ami" "ubuntu" {
 
 # --- Réseau et Internet ---
 resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block = "10.0.0.0/16"  # Plage d'adresses du VPC
 }
 
 resource "aws_subnet" "main" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = "10.0.1.0/24"
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = true  # Attribue une IP publique aux instances
 }
 
 resource "aws_internet_gateway" "igw" {
-  vpc_id = aws_vpc.main.id
+  vpc_id = aws_vpc.main.id  # Permet l'accès à Internet
 }
 
 resource "aws_route_table" "public" {

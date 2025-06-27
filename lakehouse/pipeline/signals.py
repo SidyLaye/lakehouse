@@ -1,24 +1,24 @@
 import signal
 from typing import Dict, Optional
 
-# Ensure the platform supports real-time signals
+# Vérifie que la plateforme supporte les signaux temps réel
 if not hasattr(signal, "SIGRTMIN") or not hasattr(signal, "SIGRTMAX"):
     raise RuntimeError("Platform does not support real-time signals")
 
 RTMIN, RTMAX = signal.SIGRTMIN, signal.SIGRTMAX
-MAX_OFFSET = RTMAX - RTMIN - 1  # highest allowed offset
+MAX_OFFSET = RTMAX - RTMIN - 1  # plus grand offset autorisé
 
-# Helper to safely allocate real-time signal offsets
+# Helper pour allouer un signal temps réel à partir d'un offset
 def rt(offset: int) -> int:
     """
-    Compute RTMIN + offset, ensuring it does not exceed RTMAX-1.
-    Raises RuntimeError if out of range.
+    Calcule RTMIN + offset, en vérifiant la limite RTMAX-1.
+    Lève une erreur si hors limites.
     """
     if offset > MAX_OFFSET:
         raise RuntimeError(f"Offset {offset} too large: max allowed is {MAX_OFFSET}")
     return RTMIN + offset
 
-# Define all signal keys in order; extend this list to add new signals.
+# Liste ordonnée de tous les signaux utilisés dans le pipeline
 ALL_SIGNALS = [
     # feeder.py
     ('FEEDER_SIG_CARD', 'Card loaded'),
@@ -42,7 +42,7 @@ ALL_SIGNALS = [
     ('ML_SIG_DONE', 'ML done')
 ]
 
-# Dynamically assign signals
+# Génère dynamiquement les signaux et les expose en variables globales
 def _build_signal_map():
     FILE_SIGNALS: Dict[str,int] = {}
     for idx, (var_name, label) in enumerate(ALL_SIGNALS):
@@ -53,14 +53,14 @@ def _build_signal_map():
 
 FILE_SIGNALS = _build_signal_map()
 
-# Print out the mapping for visibility
+# Affiche le mapping des signaux pour debug/visibilité
 def print_signal_mapping(
     file_signals: Dict[str, int],
     extra_signals: Optional[Dict[str, int]] = None,
     title: str = "Signal Mapping"
 ) -> None:
     """
-    Print a neat table of signal assignments.
+    Affiche un tableau lisible des signaux attribués.
 
     :param file_signals: mapping from item name to signal number
     :param extra_signals: optional mapping for additional labels
@@ -83,7 +83,7 @@ def print_signal_mapping(
             print(f"  • {name:<30} → {sig} ({sig_name})")
     print("=" * line_len)
 
-# Expose full signal metadata for orchestrator (if needed)
+# Expose la méta-data complète des signaux pour l'orchestrateur (si nécessaire)
 SIGNAL_MAP = {
     var_name: {'signal': globals()[var_name], 'label': label}
     for var_name, label in ALL_SIGNALS

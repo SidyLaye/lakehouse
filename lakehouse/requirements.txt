@@ -1,16 +1,17 @@
-elasticsearch
-fastapi
-minio
-pandas
-prometheus-client
-psycopg2-binary
-pyspark
-pydantic
-requests
-uvicorn
-pyarrow
-fastparquet
-mlflow
-matplotlib
-minio
-cloudpickle
+# Dépendances Python pour le pipeline Lakehouse
+elasticsearch      # Client Elasticsearch pour logs et monitoring
+fastapi            # API web (si besoin)
+minio              # Client MinIO pour stockage objet S3
+pandas             # Manipulation de données
+prometheus-client  # Exportation de métriques Prometheus
+psycopg2-binary    # Driver PostgreSQL
+pyspark            # Traitement distribué Spark
+pydantic           # Validation de schémas
+requests           # Requêtes HTTP
+uvicorn            # Serveur ASGI (API)
+pyarrow            # Support Parquet/Arrow
+fastparquet        # Support Parquet
+mlflow             # Suivi d'expériences ML
+matplotlib         # Visualisation
+minio              # (doublon, déjà listé plus haut)
+cloudpickle        # Sérialisation avancée Python

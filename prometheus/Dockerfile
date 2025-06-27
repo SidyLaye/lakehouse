@@ -1,3 +1,5 @@
+# Utilise l'image officielle Prometheus comme base
 FROM prom/prometheus:latest
-# Copier la config
+
+# Copie le fichier de configuration Prometheus personnalisé dans le conteneur
 COPY prometheus.yml /etc/prometheus/prometheus.yml

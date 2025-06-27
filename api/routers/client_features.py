@@ -1,11 +1,14 @@
+# Importation des modules nécessaires
 from fastapi import APIRouter, HTTPException, Query
 from typing import List, Optional
 import psycopg2
 from database import get_connection, release_connection
 from schemas import ClientFeatures
 
+# Création du routeur FastAPI pour les features client
 router = APIRouter(prefix="/client_features", tags=["ClientFeatures"])
 
+# Route GET pour lister les features clients avec pagination
 @router.get("/", response_model=List[ClientFeatures])
 def list_client_features(limit: int = Query(100, description="Nombre max de résultats"), 
                          offset: int = Query(0, description="Offset pour la pagination")):
@@ -15,6 +18,7 @@ def list_client_features(limit: int = Query(100, description="Nombre max de rés
     conn = get_connection()
     try:
         cur = conn.cursor()
+        # Requête SQL pour récupérer les features clients
         query = f"""
             SELECT client_id, tx_count, avg_amount, std_amount,
                    fraud_count, drop_count, unique_merchants,
@@ -26,6 +30,7 @@ def list_client_features(limit: int = Query(100, description="Nombre max de rés
         cur.execute(query, (limit, offset))
         rows = cur.fetchall()
         result = []
+        # Transformation des résultats SQL en objets Pydantic
         for r in rows:
             result.append(ClientFeatures(
                 client_id=r[0],
@@ -45,6 +50,7 @@ def list_client_features(limit: int = Query(100, description="Nombre max de rés
         cur.close()
         release_connection(conn)
 
+# Route GET pour récupérer les features d'un client spécifique
 @router.get("/{client_id}", response_model=ClientFeatures)
 def get_client_features(client_id: str):
     """
@@ -53,6 +59,7 @@ def get_client_features(client_id: str):
     conn = get_connection()
     try:
         cur = conn.cursor()
+        # Requête SQL pour un client précis
         query = f"""
             SELECT client_id, tx_count, avg_amount, std_amount,
                    fraud_count, drop_count, unique_merchants,

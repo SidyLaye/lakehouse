@@ -1,11 +1,14 @@
+# Importation des modules nécessaires
 from fastapi import APIRouter, HTTPException, Query
 from typing import List, Optional
 import psycopg2
 from database import get_connection, release_connection
 from schemas import MccRisk
 
+# Création du routeur FastAPI pour le risque MCC
 router = APIRouter(prefix="/mcc_risk", tags=["MccRisk"])
 
+# Route GET pour lister les risques MCC avec pagination
 @router.get("/", response_model=List[MccRisk])
 def list_mcc_risk(limit: int = Query(100, description="Nombre max de résultats"),
                   offset: int = Query(0, description="Offset pour la pagination")):
@@ -15,6 +18,7 @@ def list_mcc_risk(limit: int = Query(100, description="Nombre max de résultats"
     conn = get_connection()
     try:
         cur = conn.cursor()
+        # Requête SQL pour récupérer les risques MCC
         query = f"""
             SELECT mcc_code, mcc_description, tx_count, fraud_count,
                    drop_count, fraud_rate, drop_rate
@@ -25,6 +29,7 @@ def list_mcc_risk(limit: int = Query(100, description="Nombre max de résultats"
         cur.execute(query, (limit, offset))
         rows = cur.fetchall()
         result = []
+        # Transformation des résultats SQL en objets Pydantic
         for r in rows:
             result.append(MccRisk(
                 mcc_code=r[0],
@@ -42,6 +47,7 @@ def list_mcc_risk(limit: int = Query(100, description="Nombre max de résultats"
         cur.close()
         release_connection(conn)
 
+# Route GET pour récupérer le risque d'un code MCC spécifique
 @router.get("/{mcc_code}", response_model=MccRisk)
 def get_mcc_risk(mcc_code: str):
     """
@@ -50,6 +56,7 @@ def get_mcc_risk(mcc_code: str):
     conn = get_connection()
     try:
         cur = conn.cursor()
+        # Requête SQL pour un MCC précis
         query = f"""
             SELECT mcc_code, mcc_description, tx_count, fraud_count,
                    drop_count, fraud_rate, drop_rate

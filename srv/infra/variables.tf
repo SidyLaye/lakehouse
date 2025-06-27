@@ -1,13 +1,13 @@
-variable "aws_region" { default = "us-east-1" }
-variable "aws_profile" { default = "default" }
+variable "aws_region" { default = "us-east-1" }           # Région AWS par défaut
+variable "aws_profile" { default = "default" }              # Profil AWS par défaut
 variable "aws_credentials_files" {
   type    = list(string)
-  default = ["../_credentials/aws_learner_lab_credentials"]
+  default = ["../_credentials/aws_learner_lab_credentials"]  # Chemin du fichier d'identifiants AWS
 }
-variable "ami_id" { default = "ami-053b0d53c279acc90" }
-variable "instance_type" { default = "t3.small" }
-variable "key_name" { default = "labsuser" }
-variable "ssh_ingress_cidr" { default = "0.0.0.0/0" }
+variable "ami_id" { default = "ami-053b0d53c279acc90" }     # ID AMI Ubuntu par défaut
+variable "instance_type" { default = "t3.small" }           # Type d'instance EC2 par défaut
+variable "key_name" { default = "labsuser" }                # Nom de la clé SSH
+variable "ssh_ingress_cidr" { default = "0.0.0.0/0" }       # CIDR autorisé pour SSH
 variable "service_names" {
   description = "Liste des services à déployer"
   type        = list(string)
