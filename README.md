@@ -5,10 +5,10 @@ Ce projet propose une architecture data/ML moderne, modulaire et automatisée, p
 ---
 
 ## 🚀 Fonctionnalités principales
-- **API FastAPI** (`api/`) : endpoints REST pour la détection de fraude, documentation Swagger, code commenté (routes, schémas, accès BDD, features).
+- **API FastAPI Datamarts** (`api/`) : endpoints REST pour l’accès et l’interrogation des datamarts (features, statistiques, données agrégées issues de Spark/PostgreSQL). Aucun endpoint de détection de fraude ici.
 - **API sources** (`sources_api/`) : ingestion, split, alimentation PostgreSQL, scripts Python commentés (api.py, db.py, split.py, entrypoint.sh, requirements.txt).
 - **Pipeline Lakehouse** (`lakehouse/`) : orchestration Spark, MLflow, MinIO, scripts pipeline (datamarts, feeder, ml, preprocessing, signals), tous commentés section par section.
-- **Machine Learning API** (`api_ml/api/`) : API FastAPI dédiée à l’inférence ML, Dockerfile et scripts commentés.
+- **Machine Learning API** (`api_ml/api/`) : API FastAPI dédiée à l’inférence ML, expose l’endpoint `/predict` pour la détection de fraude, Dockerfile et scripts commentés.
 - **Interface utilisateur ML** (`api_ml/ui/`) : application Streamlit pour la prédiction et la visualisation, code et Dockerfile commentés.
 - **Base de données PostgreSQL** (`postgres/`) : Dockerfile et script d’initialisation SQL commentés.
 - **Elasticsearch** (`elasticsearch/`) : Dockerfile commenté.
@@ -18,33 +18,20 @@ Ce projet propose une architecture data/ML moderne, modulaire et automatisée, p
 
 ---
 
-## 📦 Démarrage rapide (local, Docker Compose)
+## Services principaux et ports exposés :
+| Service         | Port hôte | Description                                      |
+|-----------------|-----------|--------------------------------------------------|
+| api             | 9999      | API FastAPI pour l’accès et l’interrogation des datamarts (accès aux données agrégées, features, statistiques, etc.). Aucun endpoint de détection de fraude ici. |
+| api_ml          | 9997      | API de prédiction ML (endpoint /predict pour la détection de fraude)         |
+| ui_api_ml       | 8501      | Interface utilisateur Streamlit (consommation de l’API ML) |
+| sources_api     | 9998      | API d’ingestion et de gestion des données sources|
+| lakehouse       | 1000+     | Orchestration Spark, MLflow, MinIO, etc.         |
+| postgres        | 5432      | Base de données relationnelle                    |
+| grafana         | 3000      | Monitoring et dashboards                         |
+| prometheus      | 9090      | Monitoring des métriques                         |
+| elasticsearch   | 9200      | Recherche et logs                                |
 
-### Prérequis
-- Docker et Docker Compose installés
-- Ports suivants disponibles : 5432, 9999, 9998, 1000, 5000, 9870, 8088, 7077, 8000, 9000, 9001, 9200, 9090, 3000, 9997, 8501
-
-### Lancement des services
-```bash
-docker compose build
-# puis
-docker compose up -d
-```
-
-### Arrêt et gestion des services
-```bash
-docker compose down           # Arrêt de tous les services
-docker compose logs -f        # Logs en temps réel
-docker compose ps             # Statut des conteneurs
-docker compose build --no-cache  # Reconstruction complète
-```
-
-### Accès aux interfaces
-- **API principale** : http://localhost:9999/docs (Swagger)
-- **API sources** : http://localhost:9998/docs
-- **Interface ML (Streamlit)** : http://localhost:8501
-- **Grafana** : http://localhost:3000
-- **Prometheus** : http://localhost:9090
+**Remarque** : Les ports et services sont détaillés dans [`docker-compose.yml`](docker-compose.yml) (voir les commentaires pour chaque service).
 
 ---
 
@@ -53,7 +40,7 @@ docker compose build --no-cache  # Reconstruction complète
 ```
 .
 ├── docker-compose.yml         # Orchestration multi-conteneurs, chaque service/port/dépendance commenté
-├── api/                      # Backend FastAPI (routes, schémas, BDD, features, tout commenté)
+├── api/                      # Backend FastAPI Datamarts (accès aux features, stats, datamarts, pas de prédiction)
 │   ├── fastapi_app.py        # Application principale FastAPI, routes, logique métier
 │   ├── database.py           # Connexion PostgreSQL, gestion sessions
 │   ├── schemas.py            # Modèles Pydantic, validation
@@ -73,7 +60,7 @@ docker compose build --no-cache  # Reconstruction complète
 │   ├── pipeline/             # Scripts pipeline (datamarts, feeder, ml, preprocessing, signals), chaque script commenté
 │   └── ...
 ├── api_ml/                   # API ML et UI Streamlit
-│   ├── api/main.py           # API FastAPI ML, endpoints, logique, commentaires
+│   ├── api/main.py           # API FastAPI ML, endpoint /predict, logique, commentaires
 │   ├── api/Dockerfile        # Dockerfile commenté
 │   ├── ui/streamlit_app.py   # Interface Streamlit, logique, UI, commentaires
 │   ├── ui/Dockerfile         # Dockerfile commenté
