@@ -1,16 +1,6 @@
 #!/bin/bash
 set -e
 
-<<<<<<< HEAD
-# (1) Récupération des variables d'environnement ou utilisation des valeurs par défaut
-AWS_PROFILE=${AWS_PROFILE:-default}           # Profil AWS à utiliser
-AWS_REGION=${AWS_REGION:-us-east-1}           # Région AWS
-AWS_CREDENTIALS_FILES=${AWS_CREDENTIALS_FILES:-../_credentials/aws_learner_lab_credentials}  # Fichier d'identifiants AWS
-SSH_KEY=${SSH_KEY:-../_credentials/labsuser.pem}  # Clé SSH pour accéder aux VMs
-KEY_NAME=${KEY_NAME:-labsuser}                # Nom de la clé SSH dans AWS
-AMI_ID=${AMI_ID:-ami-053b0d53c279acc90}       # ID de l'image AMI Ubuntu
-INSTANCE_TYPE=${INSTANCE_TYPE:-t3.medium}     # Type d'instance EC2
-=======
 # (1) Pick up overrides or defaults
 AWS_PROFILE=${AWS_PROFILE:-default}
 AWS_REGION=${AWS_REGION:-us-east-1}
@@ -19,7 +9,6 @@ SSH_KEY=${SSH_KEY:-../_credentials/labsuser.pem}
 KEY_NAME=${KEY_NAME:-labsuser}
 AMI_ID=${AMI_ID:-ami-053b0d53c279acc90}
 INSTANCE_TYPE=${INSTANCE_TYPE:-t3.xlarge}
->>>>>>> cb5b0ec07bd2b86755c768f132cd95d74bc651aa
 
 # 1) Déploiement de l'infrastructure avec Terraform (ici tofu)
 echo "[1/4] => Terraform apply"
