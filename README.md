@@ -95,6 +95,16 @@ docker compose build --no-cache  # Reconstruction complète
 
 ---
 
+## 📦 Images Docker pré-compilées
+
+Toutes les images Docker nécessaires au projet sont déjà compilées et disponibles dans le registre GitLab :
+
+➡️ https://gitlab.com/SidyLaye/lakehouse-lfs/container_registry/
+
+Vous pouvez les utiliser directement dans vos déploiements (cloud, CI/CD, etc.) sans avoir à reconstruire les images localement.
+
+---
+
 ## 📝 Détail des fichiers commentés et pédagogiques
 
 - **docker-compose.yml** : chaque service, port, dépendance et réseau expliqué.
@@ -140,23 +150,53 @@ Chaque étape, script et configuration est abondamment commenté pour vous guide
 
 ## 🔬 Exemples d’utilisation
 
-### Appel API de prédiction (FastAPI)
-```sh
-curl -X POST "http://localhost:9999/predict" \
-     -H "Content-Type: application/json" \
-     -d '{ "feature1": 1.2, "feature2": 0.8, "feature3": 2.1 }'
+### Appel API de prédiction (FastAPI ML)
+
+L’API de prédiction est exposée par le service `api_ml` sur le port 9997 (voir docker-compose.yml). Pour y accéder depuis un autre conteneur ou via le réseau Docker, utilisez l’URL suivante :
+
 ```
-Réponse attendue :
+http://api_ml:9997/predict
+```
+
+Pour tester depuis l’hôte (si le port 9997 est exposé), utilisez :
+
+```
+http://localhost:9997/predict
+```
+
+#### Exemple de requête curl (depuis l’hôte)
+```sh
+curl -X POST "http://localhost:9997/predict" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "amount": 123.45,
+       "card_brand": "VISA",
+       "card_type": "CREDIT",
+       "merchant_state": "NY",
+       "use_chip": "True",
+       "credit_limit": 5000,
+       "per_capita_income": 35000,
+       "yearly_income": 42000,
+       "total_debt": 1000,
+       "credit_score": 700,
+       "num_credit_cards": 2
+     }'
+```
+
+Réponse attendue :
 ```json
 {
-  "prediction": 0,
-  "probability": 0.15,
-  "status": "success"
+  "fraud_probability": 0.15,
+  "is_fraud": false,
+  "confidence": "Moyenne"
 }
 ```
 
+> **Remarque** : L’URL de l’API peut différer selon votre environnement (réseau Docker, cloud, etc.). Dans l’interface Streamlit, l’URL par défaut est `http://api_ml:9997` (modifiable dans la barre latérale).
+
 ### Utilisation de l’interface Streamlit
-- Accédez à http://localhost:8501
+- Accédez à l’URL du service `ui_api_ml` (par défaut http://localhost:8501 si exposé).
+- Renseignez l’URL de l’API ML dans la barre latérale si besoin.
 - Remplissez le formulaire, cliquez sur "Prédire" pour obtenir le résultat, visualisez les métriques et l’historique.
 
 ### Gestion des conteneurs
