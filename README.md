@@ -101,7 +101,7 @@ Toutes les images Docker nécessaires au projet sont déjà compilées et dispon
 
 ➡️ https://gitlab.com/SidyLaye/lakehouse-lfs/container_registry/
 
-Vous pouvez les utiliser directement dans vos déploiements (cloud, CI/CD, etc.) sans avoir à reconstruire les images localement.
+Vous pouvez utiliser ces images directement dans vos déploiements (cloud, CI/CD, etc.) sans avoir à les reconstruire localement.
 
 ---
 
